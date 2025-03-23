@@ -1,0 +1,5 @@
+rootProject.name = '5004_Final_Porject'
+include 'client'
+include 'server'
+include 'common'
+
