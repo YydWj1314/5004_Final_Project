@@ -1,5 +1,8 @@
 package enumeration;
 
+/**
+ * Represents the rank of a playing card.
+ */
 public enum CardRank {
   TWO("2", 2),
   THREE("3", 3),
@@ -18,19 +21,36 @@ public enum CardRank {
   private final String symbol;
   private final int rankValue;
 
+  /**
+   * Constructs a CardRank with the specified symbol and rank value.
+   *
+   * @param symbol    the symbol associated with the card rank (e.g., "A" for Ace)
+   * @param rankValue the numerical value of the card rank used for comparison
+   */
   CardRank(String symbol, int rankValue) {
     this.symbol = symbol;
     this.rankValue = rankValue;
   }
 
+  /**
+   * @return the symbol of this card rank
+   */
   public String getSymbol() {
     return symbol;
   }
 
+  /**
+   * @return rank value of this card rank
+   */
   public int getRankValue() {
     return rankValue;
   }
 
+  /**
+   * Returns a string representation of this card rank, which is its symbol.
+   *
+   * @return the symbol of this card rank
+   */
   @Override
   public String toString() {
     return symbol;
