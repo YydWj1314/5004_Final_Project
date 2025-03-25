@@ -17,7 +17,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:2.0.42'
 }
 
-
 test {
     useJUnitPlatform()
 }
