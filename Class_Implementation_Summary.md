@@ -1,4 +1,5 @@
-# Summary of PokerGame Class Implementation
+# Summary of PokerGame Class Implementation @ 2025/03/24
+
 
 This document summarizes the implementation of the core classes used in our card game application:
 
@@ -142,3 +143,13 @@ This set of classes forms the foundation for building card game applications. Th
 
 - **Next Steps** : Implement game-specific logic, such as hand evaluations (e.g., poker hands), scoring, and game flow control.
 
+# Summary of PokerGame Java Swing-based UI Implementation @ 2025/03/26
+This Java Swing-based client UI consists of three main components:
+
+1. CardPanel: A JPanel subclass that loads and displays a background image for the main game interface.
+
+2. LoginFrame: A JFrame subclass that serves as the login window, allowing users to enter a username and transition to the main game frame.
+
+3. MainFrame: The primary game window that integrates CardPanel, a system message area, and a play button.
+
+The UI is structured in a way that first shows the login screen (LoginFrame), and upon successful login, transitions to the main game screen (MainFrame), which contains a background panel (CardPanel) and other interactive elements.

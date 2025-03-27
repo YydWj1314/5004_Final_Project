@@ -1,6 +1,11 @@
+import javax.swing.SwingUtilities;
+import view.LoginFrame;
+import view.MainFrame;
+
 public class ClientApp {
     public static void main(String[] args) {
-        // This is main
-        System.out.println("Hello World!");
+
+      //SwingUtilities.invokeLater(() -> new MainFrame());
+      new LoginFrame();
     }
 }
