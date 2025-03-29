@@ -139,9 +139,13 @@ The `Player` class represents a player participating in the card game.
 
 ## Conclusion
 
-This set of classes forms the foundation for building card game applications. They provide basic functionalities such as creating a deck, shuffling, dealing cards, and representing players and their hands.
+This set of classes forms the foundation for building card game applications. 
+They provide basic functionalities such as creating a deck, shuffling, dealing cards, 
+and representing players and their hands.
 
-- **Next Steps** : Implement game-specific logic, such as hand evaluations (e.g., poker hands), scoring, and game flow control.
+- **Next Steps** : Implement game-specific logic, such as hand evaluations (e.g., poker hands), 
+- scoring, and game flow control.
+
 
 # Summary of PokerGame Java Swing-based UI Implementation @ 2025/03/26
 This Java Swing-based client UI consists of three main components:
@@ -152,4 +156,24 @@ This Java Swing-based client UI consists of three main components:
 
 3. MainFrame: The primary game window that integrates CardPanel, a system message area, and a play button.
 
-The UI is structured in a way that first shows the login screen (LoginFrame), and upon successful login, transitions to the main game screen (MainFrame), which contains a background panel (CardPanel) and other interactive elements.
+The UI is structured in a way that first shows the login screen (LoginFrame), and upon successful login, 
+transitions to the main game screen (MainFrame), which contains a background panel (CardPanel) and other interactive elements.
+
+
+# Summary of SocketHandler and GameServer @ 2025/03/28
+
+1. SocketHandler implementation
+Implemented a SocketHandler utility class to simplify socket communication in our project. 
+This class manages Socket connections by wrapping DataInputStream and DataOutputStream for UTF-8 
+encoded message transfers.
+It includes encapsulated methods like sendMessage() (auto-flush) and receiveMessage() (returns null on failure),
+
+2. GameServer implementation
+The GameServer class forms the core network infrastructure for our multiplayer game, 
+running continuously on localhost (port 10087) to handle three essential functions: 
+(1) accepting incoming player connections through a ServerSocket infinite loop, 
+(2) tracking all connected players by logging their IP addresses (e.g., "New client connected: /127.0.0.1")
+(3) providing the foundation for future game logic integration including message exchange via SocketHandler, 
+  thread pool management for multiple players, and game state synchronization.
+3. next step
+Implement the ClientSendThread

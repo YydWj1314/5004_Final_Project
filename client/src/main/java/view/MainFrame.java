@@ -1,5 +1,8 @@
 package view;
 import java.awt.GridLayout;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +27,7 @@ public class MainFrame extends JFrame{
 
   private String message;
   private Socket socket;
+
 //  private ClientController clientController;
 //  private ClientSendThread clientSendThread;
 //  private ClientReceiveThread clientReceiveThread;
@@ -33,20 +37,29 @@ public class MainFrame extends JFrame{
   /**
    * Constructs the {@code MainFrame} and initializes UI components.
    */
-  public MainFrame() {
+  public MainFrame(Socket socket, String message) throws IOException {
+
+    this.socket = socket;
+    this.message = message;
+
+    log.info("Initializing MainFrame with socket: [{}] and message: [{}]",
+        (socket != null ? "Connected to " + socket.getRemoteSocketAddress() : "null"),
+        message);
 
     // Setting window attributes
     this.setSize(1200, 700);
     this.setLocationRelativeTo(null);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLayout(null);
-    this.setVisible(true);
+//    log.debug("Window properties set: Size=1200x700, Centered, ExitOnClose");
 
     // add CardPanel
     cardPanel = new CardPanel();
     cardPanel.setBounds(0, 0, 1200, 700);
     cardPanel.setLayout(null);
     this.add(cardPanel);
+//    log.debug("CardPanel initialized and added to main frame");
+
 
     // Adding System message area
     systemMessageArea = new JTextArea();
@@ -58,10 +71,17 @@ public class MainFrame extends JFrame{
     scrollPane.setVerticalScrollBarPolicy(
         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     cardPanel.add(scrollPane);
+//    log.debug("System message area initialized at 600,475 (500x150)");
+
 
     // Initializing `playButton`
     playButton = new JButton("Play");
     playButton.setBounds(200, 400, 100, 50);
     cardPanel.add(playButton);
+//    log.info("UI components initialized. Setting frame visible...");
+
+    this.setVisible(true);
+//    log.info("MainFrame displayed successfully");
+
   }
 }

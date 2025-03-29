@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
  * It allows users to enter their username and proceed to the main game interface.
  */
 public class LoginFrame extends JFrame {
-  //private static final String SEVER_IP = "127.0.0.1";
+  private static final String SEVER_IP = "127.0.0.1";
 
-  //private static final int SERVER_PORT = 10087;
+  private static final int SERVER_PORT = 10087;
   /**
    * Constructs a {@code LoginFrame} window with input fields for username entry.
    */
@@ -63,14 +63,25 @@ public class LoginFrame extends JFrame {
     @Override
     public void actionPerformed(ActionEvent e) {
       // 1. Creating socket connecting server
-      //Socket socket = new Socket(SEVER_IP, SERVER_PORT);
-      //log.info("Try to connect server: IP: {}, Port: {}", SEVER_IP, SERVER_PORT);
+      Socket socket = null;
+      try {
+        socket = new Socket(SEVER_IP, SERVER_PORT);
+      } catch (IOException ex) {
+        log.error("Open socket failed");
+        throw new RuntimeException(ex);
+      }
+
+      log.info("Try to connect server: IP: {}, Port: {}", SEVER_IP, SERVER_PORT);
       // 2. Getting username
-      //String username = unameJTextField.getText();
+      String username = unameJTextField.getText();
       // 3. Encapsulating command
-      //String joinMessage = CommandBuilder.buildCommand(CommandType.JOIN, username);
+//      String joinMessage = CommandBuilder.buildCommand(CommandType.JOIN, username);
       // 4. Jumping to main frame with command
-      new MainFrame();
+      try {
+        new MainFrame(socket, username);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
       dispose();
 
 
