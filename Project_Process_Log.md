@@ -177,3 +177,9 @@ running continuously on localhost (port 10087) to handle three essential functio
   thread pool management for multiple players, and game state synchronization.
 3. next step
 Implement the ClientSendThread
+
+# update @ 2025/04/2
+- Create ClientSendThread.class;
+- Create ClientReceiveThread.class;
+- Create ServerReceiveThread.class;
+- Start thread and receive messages;
