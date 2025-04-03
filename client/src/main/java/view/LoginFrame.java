@@ -83,8 +83,6 @@ public class LoginFrame extends JFrame {
         throw new RuntimeException(ex);
       }
       dispose();
-
-
     }
   }
 

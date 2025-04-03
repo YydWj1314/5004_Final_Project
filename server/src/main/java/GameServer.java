@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import thread.ServerReceiveThread;
 
 /**
  * A simple game server that listens for client connections.
@@ -34,9 +35,12 @@ public class GameServer {
       // Continuously accept client connections
       while (true) {
         // Wait for a client to connect
-        Socket clientSocket = serverSocket.accept();
-        log.info("New client connected: {}", clientSocket.getInetAddress());
+        Socket socket = serverSocket.accept();
+        log.info("New client connected: {}", socket.getInetAddress());
 
+        //Start thread
+        ServerReceiveThread serverReceiveThread = new ServerReceiveThread(socket);
+        serverReceiveThread.start();
       }
     } catch (IOException e) {
       log.error("Server error: ", e);
