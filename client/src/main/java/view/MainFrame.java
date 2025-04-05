@@ -1,5 +1,6 @@
 package view;
 
+import controller.ClientController;
 import java.awt.GridLayout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -35,7 +36,7 @@ public class MainFrame extends JFrame {
     private String message;
     private Socket socket;
 
-//  private ClientController clientController;
+    private ClientController clientController;
 //  private ClientSendThread clientSendThread;
 //  private ClientReceiveThread clientReceiveThread;
 //  private Player currentPlayer = new Player();
@@ -100,6 +101,9 @@ public class MainFrame extends JFrame {
         clientReceiveThread = new ClientReceiveThread(socket);
         clientReceiveThread.start();
         log.info("ClientReceiveThread Started Successfully");
+
+        clientController = new ClientController(message, clientSendThread);
+
 
     }
 }
