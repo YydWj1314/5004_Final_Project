@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.ClientMessageBuffer;
+
 /**
  * The {@code LoginFrame} class represents the login window for the game.
  * It allows users to enter their username and proceed to the main game interface.
@@ -78,6 +80,7 @@ public class LoginFrame extends JFrame {
 //      String joinMessage = CommandBuilder.buildCommand(CommandType.JOIN, username);
       // 4. Jumping to main frame with command
       try {
+        ClientMessageBuffer.addMessage(socket, username);
         new MainFrame(socket, username);
       } catch (IOException ex) {
         throw new RuntimeException(ex);

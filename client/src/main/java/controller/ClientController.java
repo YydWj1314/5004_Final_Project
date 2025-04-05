@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import thread.ClientSendThread;
 import utils.ClientMessageBuffer;
 
+
 public class ClientController {
 
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
@@ -16,6 +17,8 @@ public class ClientController {
         this.message = message;
         this.clientSendThread = clientSendThread;
         startMessageThread();
+
+
 
     }
 
