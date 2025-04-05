@@ -1,6 +1,7 @@
 package view;
 
 import controller.ClientController;
+
 import java.awt.GridLayout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,14 +28,17 @@ public class MainFrame extends JFrame {
     private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 
     private CardPanel cardPanel;
+
     private JTextArea systemMessageArea;
+
     private JButton playButton;
+
     private ClientSendThread clientSendThread;
+
     private ClientReceiveThread clientReceiveThread;
 
 
     private String message;
-    private Socket socket;
 
     private ClientController clientController;
 //  private ClientSendThread clientSendThread;
@@ -46,14 +50,9 @@ public class MainFrame extends JFrame {
     /**
      * Constructs the {@code MainFrame} and initializes UI components.
      */
-    public MainFrame(Socket socket, String message) throws IOException {
+    public MainFrame(String message) throws IOException {
 
-        this.socket = socket;
         this.message = message;
-
-        log.info("Initializing MainFrame with socket: [{}] and message: [{}]",
-                (socket != null ? "Connected to " + socket.getRemoteSocketAddress() : "null"),
-                message);
 
         // Setting window attributes
         this.setSize(1200, 700);
@@ -92,18 +91,8 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
 //    log.info("MainFrame displayed successfully");
 
-
-        // Start ClientSendThread
-        clientSendThread = new ClientSendThread(socket, message);
-        clientSendThread.start();
-        log.info("ClientSendThread Started Successfully");
-
-        clientReceiveThread = new ClientReceiveThread(socket);
-        clientReceiveThread.start();
-        log.info("ClientReceiveThread Started Successfully");
-
-        clientController = new ClientController(message, clientSendThread);
-
+        // Initialize ClientController
+        clientController = new ClientController(message);
 
     }
 }

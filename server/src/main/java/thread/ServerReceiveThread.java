@@ -23,7 +23,7 @@ public class ServerReceiveThread extends Thread{
     @Override
     public void run(){
         socketHandler = new SocketHandler(socket);
-        log.info("ServerReceive Thread Starts Receiving Msg...");
+        log.info("Server ReceiveThread Starts Receiving Msg...");
 
         while(true){
             String message = socketHandler.receiveMessage();

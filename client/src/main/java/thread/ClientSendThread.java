@@ -14,10 +14,10 @@ public class ClientSendThread extends Thread {
 
 
     /**
-     * Constructor
+     * Constructor of thread
      *
-     * @param socket
-     * @param message
+     * @param socket socket with target IP and port
+     * @param message message to the server
      */
     public ClientSendThread(Socket socket, String message) {
         this.socket = socket;
@@ -32,6 +32,9 @@ public class ClientSendThread extends Thread {
 //        }
 //    }
 
+    /**
+     * Override run() method for this thread
+     */
     @Override
     public void run() {
         socketHandler = new SocketHandler(socket);
