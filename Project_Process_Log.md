@@ -183,3 +183,10 @@ Implement the ClientSendThread
 - Create ClientReceiveThread.class;
 - Create ServerReceiveThread.class;
 - Start thread and receive messages;
+- 
+# update @ 2025/04/4
+- update ClientController
+- update MainFrame and LoginFrame
+- let LoginFrame only pass username to MainFrame
+- Move connection with server by socket from LoginFrame to ClientController
+- Create and start message thread in ClientController to handle message
