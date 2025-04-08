@@ -26,21 +26,25 @@ public class ClientController {
 
     private String message;
 
+    private ClientControllerListener listener;
+
 
     /**
      * Constructor of ClientController
      *
      * @param message message transmit from login frame
      */
-    public ClientController(String message) {
+    public ClientController(String message, ClientControllerListener listener) {
         this.message = message;
+        this.listener = listener;
+
         createSocket();
 
         startClientSendThread();
 
         startClientReceiveThread();
 
-        ClientMessageBuffer.addMessage(socket, message);  //test
+//        ClientMessageBuffer.addMessage(socket, message);  //test
 
         startMessageThread();
     }
@@ -111,7 +115,18 @@ public class ClientController {
 
         log.info("CC starts processing message: {}", message);
 
+        if (listener != null) {
+            listener.onTextAreaUpdated(message);
+        }
+
+
     }
+
+
+
+
+
+
 
 
 }

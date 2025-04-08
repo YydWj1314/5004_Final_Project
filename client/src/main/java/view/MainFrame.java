@@ -2,6 +2,7 @@ package view;
 
 import controller.ClientController;
 
+import controller.ClientControllerListener;
 import java.awt.GridLayout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -24,7 +25,7 @@ import java.net.Socket;
  * The {@code MainFrame} class represents the main game window.
  * It contains a background panel, a system message area, and a play button.
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ClientControllerListener {
     private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 
     private CardPanel cardPanel;
@@ -43,7 +44,7 @@ public class MainFrame extends JFrame {
     private ClientController clientController;
 //  private ClientSendThread clientSendThread;
 //  private ClientReceiveThread clientReceiveThread;
-//  private Player currentPlayer = new Player();
+//  private model.Player currentPlayer = new model.Player();
 //  private List<CardVO> cardVOList = new ArrayList<>();
 //  private List<CardVO> selectedCardVOList = new ArrayList<>();
 
@@ -53,6 +54,9 @@ public class MainFrame extends JFrame {
     public MainFrame(String message) throws IOException {
 
         this.message = message;
+
+        // Initialize ClientController
+        clientController = new ClientController(message, this);
 
         // Setting window attributes
         this.setSize(1200, 700);
@@ -91,8 +95,13 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
 //    log.info("MainFrame displayed successfully");
 
-        // Initialize ClientController
-        clientController = new ClientController(message);
+
+
+    }
+
+    @Override
+    public void onTextAreaUpdated(String message, Object... args) {
+        systemMessageArea.append(message);
 
     }
 }

@@ -1,3 +1,5 @@
+package model;
+
 import enumeration.CardRank;
 import enumeration.CardSuit;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ public class Deck {
   private List<Card> cards;
 
   /**
-   * Constructs a new Deck and initializes it with 52 cards in order.
+   * Constructs a new model.Deck and initializes it with 52 cards in order.
    */
   public Deck() {
     cards = new ArrayList<Card>();

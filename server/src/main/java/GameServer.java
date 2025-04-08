@@ -28,6 +28,7 @@ public class GameServer {
    * The server will keep running until it's manually stopped.
    */
   public GameServer() {
+    new GameController();
     // Create ServerSocket
     try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
       log.info("Server started on port {}", SERVER_PORT);

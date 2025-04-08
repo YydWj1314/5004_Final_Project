@@ -1,3 +1,5 @@
+package model;
+
 import enumeration.CardRank;
 import enumeration.CardSuit;
 import java.util.Comparator;
@@ -9,7 +11,7 @@ public class Card implements Comparable<Card> {
   private CardRank cardRank;
 
   /**
-   * Constructs a new Card with the specified suit and rank.
+   * Constructs a new model.Card with the specified suit and rank.
    *
    * @param cardSuit the suit of the card
    * @param cardRank the rank of the card

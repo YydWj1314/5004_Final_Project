@@ -1,6 +1,10 @@
+package model;
+
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import javax.smartcardio.Card;
+import utils.SocketHandler;
 
 /**
  * Represents a player in the game with a unique ID, username, hand of cards, and hand rank.
@@ -11,9 +15,11 @@ public class Player {
   private List<Card> playerHand; //cards currently held by the player
   private String handRank; // evaluated rank of the player's hand
   private static int IDCOUNTER = 0;
+  private Socket socket;
+  private SocketHandler socketHandler;
 
   /**
-   * Constructs a new Player with the specified username.
+   * Constructs a new model.Player with the specified username.
    * Each player is assigned a unique user ID.
    *
    * @param userName the username of the player
@@ -24,6 +30,16 @@ public class Player {
     this.userName = userName;
     this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
     this.handRank = null;
+  }
+
+  public Player(String userName, Socket socket) {
+    // Ensure each player is created with a unique userId incremented by 1
+    this.userId = IDCOUNTER++;
+    this.userName = userName;
+    this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
+    this.handRank = null;
+    this.socket = socket;
+    this.socketHandler = new SocketHandler(socket);
   }
 
   /**
@@ -88,11 +104,16 @@ public class Player {
    */
   @Override
   public String toString() {
-    return "Player{" +
+    return "model.Player{" +
         "userId=" + userId +
         ", userName='" + userName + '\'' +
         ", playerHand=" + playerHand +
         ", handRank='" + handRank + '\'' +
         '}';
   }
+
+  public void sendMessage(String message) {
+    socketHandler.sendMessage(message);
+  }
+
 }
