@@ -190,3 +190,10 @@ Implement the ClientSendThread
 - let LoginFrame only pass username to MainFrame
 - Move connection with server by socket from LoginFrame to ClientController
 - Create and start message thread in ClientController to handle message
+# update @ 2025/04/07
+- update GameController
+- create player instances based on incoming message
+- broadcast messages back to connected players
+- initialize a deck for the game, will add operations later
+- move model package under server directory
+- update ClientController and MainFrame
