@@ -1,10 +1,14 @@
 package controller;
 
+import enumeration.CommandType;
+import model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
 import thread.ClientSendThread;
-import utils.ClientMessageBuffer;
+import utils.ClientReceiveMQ;
+import utils.ClientSendMQ;
+import utils.CommandBuilder;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,25 +22,35 @@ public class ClientController {
 
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
-    private static final String SEVER_IP = "127.0.0.1";
+    private static final String SEVER_IP = "127.0.0.1"; // IP address listened by server
 
-    private static final int SERVER_PORT = 10087;
+    private static final int SERVER_PORT = 10087;   // port listened by server
 
     private Socket socket;
 
-    private String message;
+    private String playerName;  // player name from login frame
+
+    private ClientSendMQ clientSendMQ;
+
+    private ClientReceiveMQ clientReceiveMQ;
 
     private ClientControllerListener listener;
+
+    private Player localPlayer;
 
 
     /**
      * Constructor of ClientController
      *
-     * @param message message transmit from login frame
+     * @param playerName player name input in login frame
+     *                   received from login frame
      */
-    public ClientController(String message, ClientControllerListener listener) {
-        this.message = message;
+    public ClientController(String playerName, ClientControllerListener listener) {
+        this.playerName = playerName;
         this.listener = listener;
+        this.clientSendMQ = new ClientSendMQ();
+        this.clientReceiveMQ = new ClientReceiveMQ();
+        this.localPlayer = new Player(playerName);
 
         createSocket();
 
@@ -44,9 +58,10 @@ public class ClientController {
 
         startClientReceiveThread();
 
-//        ClientMessageBuffer.addMessage(socket, message);  //test
+        startHandlingMsg();
 
-        startMessageThread();
+        // send player name received from loginFrame to server
+        sendPlayerName();
     }
 
     /**
@@ -66,37 +81,36 @@ public class ClientController {
 
 
     /**
-     * Create thread receiving message to backend
-     * and start the thread
-     */
-    private void startClientReceiveThread() {
-        ClientReceiveThread clientReceiveThread = new ClientReceiveThread(socket);
-        clientReceiveThread.start();
-        log.info("ClientReceiveThread Started Successfully");
-    }
-
-    /**
      * Create thread sending message to backend
      * and start the thread
      */
     private void startClientSendThread() {
         // Start ClientSendThread
-        ClientSendThread clientSendThread = new ClientSendThread(socket, message);
+        ClientSendThread clientSendThread = new ClientSendThread(socket, clientSendMQ);
         clientSendThread.start();
         log.info("ClientSendThread Started Successfully");
     }
 
-
     /**
-     * Create new thread handing message receiving from backend
+     * Create thread receiving message to backend
      * and start the thread
      */
-    private void startMessageThread() {
+    private void startClientReceiveThread() {
+        ClientReceiveThread clientReceiveThread = new ClientReceiveThread(socket, clientReceiveMQ);
+        clientReceiveThread.start();
+        log.info("ClientReceiveThread Started Successfully");
+    }
+
+    /**
+     * Start new thread taking msg from MQ,
+     * and start handing message
+     */
+    private void startHandlingMsg() {
         // Starting Message thread and taking messages
         new Thread(() -> {
             log.info("ClientController Listening for Messages...");
             while (true) {
-                ClientMessageBuffer.MessageEntry entry = ClientMessageBuffer.takeMessage();
+                ClientReceiveMQ.MessageEntry entry = clientReceiveMQ.takeMessage();
                 if (entry != null) {
                     log.info("CC has taken message: {}", entry.message);
                     // Handling messages
@@ -107,26 +121,52 @@ public class ClientController {
     }
 
     /**
+     *
+     */
+    private void sendPlayerName() {
+        // Encapsulate player name to JOIN command
+        // eg: JOIN yyd
+        String joinCommand = CommandBuilder.buildCommand(CommandType.JOIN, playerName);
+        // Add command to sendMQ
+        clientSendMQ.addMessage(socket, joinCommand);
+        log.info("JoinCommand ==> clientSendMQ: {}", joinCommand);
+    }
+
+    /**
+     * Handle message taken from messageBuffer
+     *
      * @param message message taken from messageBuffer
      *                send from backend server
      */
     private void handleMessage(String message) {
-        System.out.println("======= handleMessage =======");
+        System.out.println("========== Client handleMessage info==========");
 
-        log.info("CC starts processing message: {}", message);
+        String[] parts = message.split(" ");
+        String commandType = parts[0];
+        String commandArgs = message.substring(commandType.length()).trim();
 
-        if (listener != null) {
-            listener.onTextAreaUpdated(message);
+        switch (commandType) {
+            case "WELCOME" -> {
+                // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
+                System.out.println("----- WELCOME -----");
+                if (listener != null) {
+                    String welcomeString = String.format(
+                            "%s Welcome! Online player number: %s.", parts[1], parts[3]
+                    );
+
+                    // Getting socket send by server
+                    String receivedSocketAddress = parts[4];
+                    // Getting client local socket
+                    String localSocketAddress = socket.getLocalSocketAddress().toString();
+                    // Setting id for player
+                    if (receivedSocketAddress.equals(localSocketAddress)) {
+                        this.localPlayer.setId(Integer.parseInt(parts[2]));
+                        log.info("Set ID for current player: {}", this.localPlayer.getId());
+                    }
+
+                    listener.onTextAreaUpdated(welcomeString);
+                }
+            }
         }
-
-
     }
-
-
-
-
-
-
-
-
 }

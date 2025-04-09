@@ -178,22 +178,43 @@ running continuously on localhost (port 10087) to handle three essential functio
 3. next step
 Implement the ClientSendThread
 
-# update @ 2025/04/2
+# update @ 2025/04/2 by YYD
 - Create ClientSendThread.class;
 - Create ClientReceiveThread.class;
 - Create ServerReceiveThread.class;
 - Start thread and receive messages;
 - 
-# update @ 2025/04/4
+# update @ 2025/04/4 by YYD
 - update ClientController
 - update MainFrame and LoginFrame
 - let LoginFrame only pass username to MainFrame
 - Move connection with server by socket from LoginFrame to ClientController
 - Create and start message thread in ClientController to handle message
-# update @ 2025/04/07
+- 
+# update @ 2025/04/07 by ZMT
 - update GameController
 - create player instances based on incoming message
 - broadcast messages back to connected players
 - initialize a deck for the game, will add operations later
 - move model package under server directory
 - update ClientController and MainFrame
+
+# update @ 2025/04/08 by YYD
+- bug fixed in mainframe JTextField, now can show broadcasting message
+- rename MessageBuffer to ReceiveMQ / SendMQ
+- update structure: add ReceiveMQ / SendMQ in both backend and front end
+  -  now using this structure to send msg:
+  ```
+  while (true) {
+  String message = messageQueue.take(); // This line blocks (waits)
+  socketHandler.sendMessage(message);   // This sends the message
+  ```
+  - add ClientSendThread to take msg from sendMQ and call socketHandler to send msg
+- update Command system: now message need to be encapsulated to standard cmd
+  - format：CommandType + string, eg: JOIN yyd
+- update MessageBroadCaster util: broadcasting msg to every player's client by sendMQ
+- Update handleMessage() in GC & CC:  JOIN & WELCOME 
+
+
+
+}

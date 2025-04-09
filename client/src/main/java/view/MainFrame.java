@@ -3,16 +3,12 @@ package view;
 import controller.ClientController;
 
 import controller.ClientControllerListener;
+
 import java.awt.GridLayout;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +34,6 @@ public class MainFrame extends JFrame implements ClientControllerListener {
 
     private ClientReceiveThread clientReceiveThread;
 
-
     private String message;
 
     private ClientController clientController;
@@ -63,14 +58,12 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
-//    log.debug("Window properties set: Size=1200x700, Centered, ExitOnClose");
 
         // add CardPanel
         cardPanel = new CardPanel();
         cardPanel.setBounds(0, 0, 1200, 700);
         cardPanel.setLayout(null);
         this.add(cardPanel);
-//    log.debug("CardPanel initialized and added to main frame");
 
 
         // Adding System message area
@@ -83,25 +76,20 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         cardPanel.add(scrollPane);
-//    log.debug("System message area initialized at 600,475 (500x150)");
 
 
         // Initializing `playButton`
         playButton = new JButton("Play");
         playButton.setBounds(200, 400, 100, 50);
         cardPanel.add(playButton);
-//    log.info("UI components initialized. Setting frame visible...");
 
         this.setVisible(true);
-//    log.info("MainFrame displayed successfully");
-
-
-
+        log.info("MainFrame displayed successfully");
     }
 
     @Override
     public void onTextAreaUpdated(String message, Object... args) {
-        systemMessageArea.append(message);
-
+        SwingUtilities.invokeLater(() -> systemMessageArea.append(message + "\n"));
+        log.info("TextFiled Update: {}", message );
     }
 }

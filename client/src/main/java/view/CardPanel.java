@@ -38,7 +38,6 @@ public class CardPanel extends JPanel {
     // check null
     if (backgroundImage != null) {
       g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
-      log.info("image loaded successfully");
     } else {
       log.error("Image Unloaded, check the URL");
     }

@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,7 +11,6 @@ import javax.swing.JTextField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ClientMessageBuffer;
 
 /**
  * The {@code LoginFrame} class represents the login window for the game.
@@ -20,9 +18,7 @@ import utils.ClientMessageBuffer;
  */
 public class LoginFrame extends JFrame {
 
-    /**
-     * Constructs a {@code LoginFrame} window with input fields for username entry.
-     */
+
     private static final Logger log = LoggerFactory.getLogger(
             LoginFrame.class);
 
@@ -30,6 +26,9 @@ public class LoginFrame extends JFrame {
     private JTextField unameJTextField;
     private JButton jButton;
 
+    /**
+     * Constructs a {@code LoginFrame} window with input fields for username entry.
+     */
     public LoginFrame() {
         // Creating component objects
         this.unameJLabel = new JLabel("UserName");

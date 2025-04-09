@@ -10,8 +10,8 @@ import utils.SocketHandler;
  * Represents a player in the game with a unique ID, username, hand of cards, and hand rank.
  */
 public class Player {
-  private int userId; //unique identifier for the player
-  private String userName;
+  private int playerId; //unique identifier for the player
+  private String playerName;
   private List<Card> playerHand; //cards currently held by the player
   private String handRank; // evaluated rank of the player's hand
   private static int IDCOUNTER = 0;
@@ -20,22 +20,22 @@ public class Player {
 
   /**
    * Constructs a new model.Player with the specified username.
-   * Each player is assigned a unique user ID.
+   * Each player is assigned a unique player ID.
    *
-   * @param userName the username of the player
+   * @param playerName the username of the player
    */
-  public Player(String userName) {
-    // Ensure each player is created with a unique userId incremented by 1
-    this.userId = IDCOUNTER++;
-    this.userName = userName;
+  public Player(String playerName) {
+    // Ensure each player is created with a unique playerId incremented by 1
+    this.playerId = IDCOUNTER++;
+    this.playerName = playerName;
     this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
     this.handRank = null;
   }
 
-  public Player(String userName, Socket socket) {
-    // Ensure each player is created with a unique userId incremented by 1
-    this.userId = IDCOUNTER++;
-    this.userName = userName;
+  public Player(String playerName, Socket socket) {
+    // Ensure each player is created with a unique playerId incremented by 1
+    this.playerId = IDCOUNTER++;
+    this.playerName = playerName;
     this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
     this.handRank = null;
     this.socket = socket;
@@ -43,17 +43,17 @@ public class Player {
   }
 
   /**
-   * @return the user ID of the player
+   * @return the player ID of the player
    */
-  public int getUserId() {
-    return userId;
+  public int getId() {
+    return playerId;
   }
 
   /**
    * @return the username of the player
    */
-  public String getUserName() {
-    return userName;
+  public String getName() {
+    return playerName;
   }
 
   /**
@@ -61,8 +61,27 @@ public class Player {
    *
    * @return the player's hand of cards
    */
-  public List<Card> getPlayerHand() {
+  public List<Card> getHand() {
     return playerHand;
+  }
+
+  /**
+   * Returns the socket of the player.
+   *
+   * @return socket of the player
+   */
+  public Socket getSocket() {
+    return socket;
+  }
+
+
+  /**
+   * Sets player's id.
+   *
+   * @param playerId player id
+   */
+  public void setId(int playerId) {
+    this.playerId = playerId;
   }
 
   /**
@@ -70,7 +89,7 @@ public class Player {
    *
    * @param playerHand the list of cards to set as the player's hand
    */
-  public void setPlayerHand(List<Card> playerHand) {
+  public void setHand(List<Card> playerHand) {
     this.playerHand = playerHand;
   }
 
@@ -94,24 +113,27 @@ public class Player {
    * Displays the player's hand to the console.
    */
   public void displayHand() {
-    System.out.println(userId + " hand: " + playerHand);
+    System.out.println(playerId + " hand: " + playerHand);
   }
 
   /**
-   * Returns a string representation of the player, including user ID, username, hand, and hand rank.
+   * Returns a string representation of the player, including player ID, username, hand, and hand rank.
    *
    * @return a string representation of the player
    */
   @Override
   public String toString() {
     return "model.Player{" +
-        "userId=" + userId +
-        ", userName='" + userName + '\'' +
+        "playerId=" + playerId +
+        ", playerName='" + playerName + '\'' +
         ", playerHand=" + playerHand +
         ", handRank='" + handRank + '\'' +
         '}';
   }
 
+  /**
+   * @param message
+   */
   public void sendMessage(String message) {
     socketHandler.sendMessage(message);
   }

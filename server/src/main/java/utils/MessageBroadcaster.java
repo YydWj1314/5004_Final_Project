@@ -8,16 +8,21 @@ import java.util.List;
 
 public class MessageBroadcaster {
   private static final Logger log = LoggerFactory.getLogger(MessageBroadcaster.class);
+  private ServerSendMQ serverSendMQ;
+
+  public MessageBroadcaster(ServerSendMQ serverSendMQ) {
+    this.serverSendMQ = serverSendMQ;
+  }
 
   /**
-   * BroadCast to all players
+   * BroadCast to all clients
    *
    * @param playerList
    * @param message
    */
-  public static void broadcastMessage(List<Player> playerList, String message) {
+  public void broadcastMessage(List<Player> playerList, String message) {
     for (Player player : playerList) {
-      player.sendMessage(message);
+        serverSendMQ.addMessage(player.getSocket(), message);
     }
     log.info("📢 Broadcasting Message: {}", message);
   }

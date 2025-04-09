@@ -2,31 +2,31 @@ package thread;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ClientSendMQ;
+import utils.ServerSendMQ;
 import utils.SocketHandler;
 
 import java.net.Socket;
 
-public class ClientSendThread extends Thread {
-    private static final Logger log = LoggerFactory.getLogger(ClientSendThread.class);
+public class ServerSendThread extends Thread {
+    private static final Logger log = LoggerFactory.getLogger(ServerSendThread.class);
 
     private Socket socket;
 
     private SocketHandler socketHandler;
 
-    private ClientSendMQ clientSendMQ;
+    private ServerSendMQ serverSendMQ;
 
 
     /**
      * Constructor of thread
      *
      * @param socket socket with target IP and port
-     * @param clientSendMQ
+     * @param serverSendMQ
      */
-    public ClientSendThread(Socket socket, ClientSendMQ clientSendMQ) {
+    public ServerSendThread(Socket socket, ServerSendMQ serverSendMQ) {
         this.socket = socket;
-        this.clientSendMQ = clientSendMQ;
-        log.info("ClientSendThread Initialized Successfully, Socket:{}", socket);
+        this.serverSendMQ = serverSendMQ;
+        log.info("ServerSendThread Initialized Successfully, Socket:{}", socket);
     }
 
 //    public void sendMessage(String newMessage) {
@@ -42,13 +42,13 @@ public class ClientSendThread extends Thread {
      */
     @Override
     public void run() {
-        System.out.println("======== ClientSendThread info ========");
+        System.out.println("======== ServerSendThread info ========");
         socketHandler = new SocketHandler(socket);
-        log.info("ClientSendThread: Starts Sending Msg...");
+        log.info("ServerSendThread: Starts Sending Msg...");
 
         while (true) {  // busy waiting
-            String message = clientSendMQ.takeMessage().message;
-            log.info("ClientSendThread took msg successfully: {}", message);
+            String message = serverSendMQ.takeMessage().message;
+            log.info("ServerSendThread took msg successfully: {}", message);
             socketHandler.sendMessage(message);
         }
     }
