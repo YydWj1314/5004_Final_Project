@@ -125,7 +125,15 @@ public class GameController {
                         newPlayer.getSocket().getRemoteSocketAddress().toString()  //parts[4]
                 );
                 messageBroadcaster.broadcastMessage(playerList, welcomeCommand);
-
+                String startCommand = "";
+                if (playerList.size() >= MAX_PLAYER_NUMBER) {
+                    // Build the "START" command to indicate the game start
+                    startCommand = CommandBuilder.buildCommand(
+                            CommandType.START                   // parts[0] - Command type is "START"
+                    );
+                }
+                // Broadcast the "START" command to all players to initiate the game
+                messageBroadcaster.broadcastMessage(playerList, startCommand);
 //                // Game starts when players are ready
 //                if(playerList.size() >= MAX_PLAYER_NUMBER) {
 //                    // Broadcasting game start message

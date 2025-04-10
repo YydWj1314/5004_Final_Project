@@ -1,4 +1,4 @@
-# Summary of PokerGame Class Implementation @ 2025/03/24
+# Summary of PokerGame Class Implementation @ 2025/03/24 by ZMT
 
 
 This document summarizes the implementation of the core classes used in our card game application:
@@ -147,7 +147,7 @@ and representing players and their hands.
 - scoring, and game flow control.
 
 
-# Summary of PokerGame Java Swing-based UI Implementation @ 2025/03/26
+# Summary of PokerGame Java Swing-based UI Implementation @ 2025/03/26 By YQ
 This Java Swing-based client UI consists of three main components:
 
 1. CardPanel: A JPanel subclass that loads and displays a background image for the main game interface.
@@ -160,7 +160,7 @@ The UI is structured in a way that first shows the login screen (LoginFrame), an
 transitions to the main game screen (MainFrame), which contains a background panel (CardPanel) and other interactive elements.
 
 
-# Summary of SocketHandler and GameServer @ 2025/03/28
+# Summary of SocketHandler and GameServer @ 2025/03/28 By ZYL
 
 1. SocketHandler implementation
 Implemented a SocketHandler utility class to simplify socket communication in our project. 
@@ -215,6 +215,12 @@ Implement the ClientSendThread
 - update MessageBroadCaster util: broadcasting msg to every player's client by sendMQ
 - Update handleMessage() in GC & CC:  JOIN & WELCOME 
 
-
+# update @ 2025/04/09 by YQ
+- update GameController, ClientController, MainFrame
+- add javadoc note
+- Added an enum class: Command.Start.
+- Wrote the corresponding handling code in ClientController for this enum.
+- Implemented displaying "Game Started" on the whiteboard at the bottom right of the game 
+once the required number of players is reached.
 
 }

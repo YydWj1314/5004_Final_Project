@@ -92,4 +92,16 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         SwingUtilities.invokeLater(() -> systemMessageArea.append(message + "\n"));
         log.info("TextFiled Update: {}", message );
     }
+
+    @Override
+    public void onGameStart() {
+        // Use invokeLater to ensure the UI updates happen on the Event Dispatch Thread (EDT)
+        SwingUtilities.invokeLater(() -> {
+            // Append the game start message to the system message area
+            systemMessageArea.append("Game Started!\n");
+            // Enable the play button
+            playButton.setEnabled(true);
+        });
+        log.info("Game Start triggered from Server.");
+    }
 }
