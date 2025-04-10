@@ -11,7 +11,8 @@ public enum CommandType {
 
     // Client command:
     WELCOME("WELCOME"),
-    CLIENT_PLAY("CLIENT_PLAY");
+    CLIENT_PLAY("CLIENT_PLAY"),
+    START("START");
 
 
     private final String type;

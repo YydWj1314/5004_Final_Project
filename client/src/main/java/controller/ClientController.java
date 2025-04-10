@@ -167,6 +167,19 @@ public class ClientController {
                     listener.onTextAreaUpdated(welcomeString);
                 }
             }
+            case "START" -> {
+                log.info("Received START command from server.");
+                if (listener != null) {
+                    // Update system message area with the game start information
+                    listener.onTextAreaUpdated("All players joined. Game is starting...");
+
+                    // Trigger the game start action in the UI
+                    listener.onGameStart();
+
+                    // Optional: Send a special message or mark the end of message update (if necessary)
+                    listener.onTextAreaUpdated("***");
+                }
+            }
         }
     }
 }
