@@ -3,7 +3,6 @@ package model;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import javax.smartcardio.Card;
 import utils.SocketHandler;
 
 /**
@@ -137,5 +136,6 @@ public class Player {
   public void sendMessage(String message) {
     socketHandler.sendMessage(message);
   }
+
 
 }

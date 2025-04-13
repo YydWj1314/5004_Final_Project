@@ -18,6 +18,13 @@ dependencies {
     implementation project(':common')
 }
 
+tasks.register('runServer', JavaExec) {
+    group = 'application'
+    description = 'Runs the ServerApp main class'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'ServerApp'
+}
+
 test {
     useJUnitPlatform()
 }

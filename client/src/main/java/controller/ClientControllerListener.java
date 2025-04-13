@@ -25,4 +25,6 @@ public interface ClientControllerListener {
    * "game started" message.
    */
   void onGameStart();
+
+  void onPlayerHandUpdated(Object playerDTO);
 }

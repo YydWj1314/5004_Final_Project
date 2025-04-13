@@ -3,16 +3,21 @@ package controller;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import enumeration.CommandType;
+import java.util.Objects;
+import model.Card;
 import model.Deck;
 import model.Player;
+import model.PlayerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ServerReceiveThread;
 import thread.ServerSendThread;
 import utils.CommandBuilder;
+import utils.JsonUtil;
 import utils.MessageBroadcaster;
 import utils.ServerReceiveMQ;
 import utils.ServerSendMQ;
@@ -28,13 +33,18 @@ public class GameController {
 
     private static final int MAX_PLAYER_NUMBER = 2;
 
+    private static final int MAX_CARDS_NUMBER = 5;
+
     private List<Player>  playerList;
 
+    private Deck deck;
+
     public GameController() {
-        this.playerList = new ArrayList<>();
+        this.playerList = Collections.synchronizedList(new ArrayList<>());
         serverReceiveMQ = new ServerReceiveMQ();
         serverSendMQ = new ServerSendMQ();
         messageBroadcaster = new MessageBroadcaster(serverSendMQ);
+        deck = new Deck();
 
     }
 
@@ -111,6 +121,7 @@ public class GameController {
                 log.info("------ JOIN COMMAND -----");
                 // Creating new player and adding to the player list
                 Player newPlayer = new Player(parts[1], socket);
+                synchronized (playerList){}
                 this.playerList.add(newPlayer);
                 log.info("PlayerList Added: [id:{}, name:{}, socket:{}]",
                         newPlayer.getId(), newPlayer.getName(), newPlayer.getSocket());
@@ -125,37 +136,51 @@ public class GameController {
                         newPlayer.getSocket().getRemoteSocketAddress().toString()  //parts[4]
                 );
                 messageBroadcaster.broadcastMessage(playerList, welcomeCommand);
-                String startCommand = "";
                 if (playerList.size() >= MAX_PLAYER_NUMBER) {
-                    // Build the "START" command to indicate the game start
-                    startCommand = CommandBuilder.buildCommand(
-                            CommandType.START                   // parts[0] - Command type is "START"
-                    );
+                    // Step 1: Build the "START" command and broadcast it to all players
+                    // This informs all connected clients that the game is officially starting
+                    String startCommand = CommandBuilder.buildCommand(CommandType.START);
+                    messageBroadcaster.broadcastMessage(playerList, startCommand);
+
+                    // Step 2: Shuffle the deck and deal cards to each player individually
+                    // Each player only receives their own private hand
+                    deck.shuffle();
+
+                    for (Player player : playerList) {
+                        log.info("--------Deal start--------");
+                        // Deal MAX_CARDS_NUMBER cards to this player
+                        List<Card> hold = deck.deal(MAX_CARDS_NUMBER);
+                        log.info("Deal 5 cards:");
+                        log.info("Set player hand start");
+                        log.info(
+                            Objects.toString(hold, "null"));
+                        player.setHand(hold);  // Store the hand in the Player object
+                        log.info("Set player hand success");
+
+
+                        // Create a PlayerDTO with the player's ID, name, and private hand
+                        PlayerDTO dto = new PlayerDTO(player.getId(), player.getName(), hold);
+                        log.info("Player info:");
+                        log.info(dto.getPlayerName());
+                        log.info(dto.getPlayerHand().toString());
+
+                        // Convert the DTO to JSON format for network transmission
+                        String playerJson = "START " + JsonUtil.toJson(dto);
+                        log.info("Player json");
+                        log.info(playerJson);
+
+                        // Send the JSON message to the individual player via socket
+                        // Note: This message is private — only this player receives their hand
+                        player.sendMessage(playerJson);
+                        log.info("Player info sent success");
+                    }
                 }
-                // Broadcast the "START" command to all players to initiate the game
-                messageBroadcaster.broadcastMessage(playerList, startCommand);
-//                // Game starts when players are ready
-//                if(playerList.size() >= MAX_PLAYER_NUMBER) {
-//                    // Broadcasting game start message
-//                    String startMessage = CommandBuilder.buildCommand(CommandType.BROADCAST, "Game Start!");
-//                    MessageBroadcaster.broadcastMessage(playerList,startMessage);
-//
-//                    // Shuffling and Dealing cards to players
-//                    deck.shuffle();
-//                    log.info("Initialized deck and shuffled");
-//                    for (Player player : playerList) {
-//                        // Dealing cards
-//                        player.getCardsFromDeck(deck, 5);
-//
-//                        // Sorting cards in descending order according to card rank
-//                        List<Card> hand = player.getHand();
-//                        Collections.sort(hand, Comparator
-//                                .comparingInt((Card c) -> c.getRank().getValue())
-//                                .reversed()
-//                        );
-//                    }
-//                    log.info("Finished dealing cards to all players: {}", playerList);
+
+
+
+
             }
+
         }
     }
 }

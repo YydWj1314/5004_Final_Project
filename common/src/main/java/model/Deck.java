@@ -5,11 +5,13 @@ import enumeration.CardSuit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Represents a standard deck of 52 playing cards.
  */
 public class Deck {
+  private static final Logger logger = Logger.getLogger(Deck.class.getName());
   private List<Card> cards;
 
   /**
@@ -50,11 +52,13 @@ public class Deck {
    */
   public List<Card> deal(int n) {
     if (isEmpty() || cards.size() < n) {
+      logger.info("No enough cards left in the deck");
       return null;
     }
-    List<Card> newList = cards.subList(0, n);
-    cards.subList(0, n).clear(); // remove n cards from deck
-    return newList;
+    List<Card> sub = new ArrayList<>(cards.subList(0, n));
+    cards.subList(0, n).clear();
+    return sub;
+
   }
 
   /**

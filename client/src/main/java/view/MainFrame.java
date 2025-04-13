@@ -5,11 +5,16 @@ import controller.ClientController;
 import controller.ClientControllerListener;
 
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.*;
 
+import model.Card;
+import model.PlayerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
@@ -104,4 +109,52 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         });
         log.info("Game Start triggered from Server.");
     }
+
+    @Override
+    public void onPlayerHandUpdated(Object playerDTO) {
+        // Ensure that UI updates are done on the Event Dispatch Thread (EDT)
+        SwingUtilities.invokeLater(() -> {
+            // Cast the playerDTO to PlayerDTO
+            PlayerDTO player = (PlayerDTO) playerDTO;
+
+            // Clear the existing cards from the panel before adding new ones
+            cardPanel.removeAllCards();
+
+            int xOffset = 250;
+            int cardWidth = 80;
+            int cardHeight = 120;
+
+            // Display with order
+            List<Card> playerHands = player.getPlayerHand();
+            Collections.sort(playerHands);
+            Collections.reverse(playerHands);
+
+            // Update the card panel with the new player's hand
+            // Loop through the player's hand and add each card to the card panel
+            for (Card card : playerHands) {
+                // Load and scale image
+                Image originalImage = cardPanel.loadCardImage(card);
+                Image scaledImage = originalImage.getScaledInstance(cardWidth, cardHeight, Image.SCALE_SMOOTH);
+                ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+                // Create a JLabel with the card image or text
+                JLabel cardLabel = new JLabel(scaledIcon);
+                // Optionally, you can set the bounds or position of each card
+                cardLabel.setBounds(xOffset, 500, cardWidth, cardHeight);
+
+                xOffset -= 30;
+                // Add the card label to the card panel
+                cardPanel.add(cardLabel);
+            }
+
+            // Revalidate and repaint the cardPanel to ensure the UI updates correctly
+            cardPanel.revalidate();
+            cardPanel.repaint();
+        });
+
+        log.info("Player hand updated: {}", playerDTO);
+    }
+
+
+
 }
