@@ -223,4 +223,11 @@ Implement the ClientSendThread
 - Implemented displaying "Game Started" on the whiteboard at the bottom right of the game 
 once the required number of players is reached.
 
+# update @ 2025/04/12 by YQ
+- Added the logic for dealing cards after reaching the maximum number of players in GameController, 
+and encapsulated the player information into a newly created PlayerDTO class to send to the frontend for UI updates.
+- Enhanced the original Card class by adding coordinate properties and an image property for each card.
+- Implemented the logic in MainFrame for each player to display their own hand, and adjusted the display order of the cards.
+- Ensured that each player can only see their own cards.
+
 }
