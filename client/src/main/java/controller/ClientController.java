@@ -1,7 +1,10 @@
 package controller;
 
+import com.alibaba.fastjson.JSONArray;
 import enumeration.CommandType;
+import java.util.List;
 import model.Player;
+import model.PlayerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
@@ -12,6 +15,7 @@ import utils.CommandBuilder;
 
 import java.io.IOException;
 import java.net.Socket;
+import utils.JsonUtil;
 
 
 /**
@@ -175,11 +179,25 @@ public class ClientController {
 
                     // Trigger the game start action in the UI
                     listener.onGameStart();
+                    log.info("------On Game Start------");
+                    try {
+                        // Parse JSON message to get player hand details
+                        log.info("Command Args:");
+                        log.info(commandArgs);
+                        PlayerDTO playerDTO = JsonUtil.parseJson(commandArgs, PlayerDTO.class);
+                        log.info("Update player hand start");
+                        // Update the UI with the player's hand
+                        listener.onPlayerHandUpdated(playerDTO);
+                        log.info("Update player hand success");
+                    } catch (Exception e) {
+                        log.error("Failed to parse player hands", e);
+                    }
 
                     // Optional: Send a special message or mark the end of message update (if necessary)
                     listener.onTextAreaUpdated("***");
                 }
             }
+
         }
     }
 }

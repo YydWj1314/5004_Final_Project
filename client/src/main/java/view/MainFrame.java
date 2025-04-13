@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.swing.*;
 
+import model.Card;
+import model.PlayerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
@@ -104,4 +106,39 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         });
         log.info("Game Start triggered from Server.");
     }
+
+    @Override
+    public void onPlayerHandUpdated(Object playerDTO) {
+        // Ensure that UI updates are done on the Event Dispatch Thread (EDT)
+        SwingUtilities.invokeLater(() -> {
+            // Cast the playerDTO to PlayerDTO
+            PlayerDTO player = (PlayerDTO) playerDTO;
+
+            // Clear the existing cards from the panel before adding new ones
+            cardPanel.removeAllCards();
+
+            int xOffset = 50;
+            // Update the card panel with the new player's hand
+            // Loop through the player's hand and add each card to the card panel
+            for (Card card : player.getPlayerHand()) {
+                // Create a JLabel with the card image or text
+                // Assuming card has an appropriate image representation
+                JLabel cardLabel = new JLabel(new ImageIcon(cardPanel.loadCardImage(card)));
+                // Optionally, you can set the bounds or position of each card
+                cardLabel.setBounds(xOffset, 450, 80, 120);
+                xOffset += 30;
+                // Add the card label to the card panel
+                cardPanel.add(cardLabel);
+            }
+
+            // Revalidate and repaint the cardPanel to ensure the UI updates correctly
+            cardPanel.revalidate();
+            cardPanel.repaint();
+        });
+
+        log.info("Player hand updated: {}", playerDTO);
+    }
+
+
+
 }
