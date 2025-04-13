@@ -5,9 +5,12 @@ import controller.ClientController;
 import controller.ClientControllerListener;
 
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.*;
 
 import model.Card;
@@ -117,16 +120,29 @@ public class MainFrame extends JFrame implements ClientControllerListener {
             // Clear the existing cards from the panel before adding new ones
             cardPanel.removeAllCards();
 
-            int xOffset = 50;
+            int xOffset = 250;
+            int cardWidth = 80;
+            int cardHeight = 120;
+
+            // Display with order
+            List<Card> playerHands = player.getPlayerHand();
+            Collections.sort(playerHands);
+            Collections.reverse(playerHands);
+
             // Update the card panel with the new player's hand
             // Loop through the player's hand and add each card to the card panel
-            for (Card card : player.getPlayerHand()) {
+            for (Card card : playerHands) {
+                // Load and scale image
+                Image originalImage = cardPanel.loadCardImage(card);
+                Image scaledImage = originalImage.getScaledInstance(cardWidth, cardHeight, Image.SCALE_SMOOTH);
+                ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
                 // Create a JLabel with the card image or text
-                // Assuming card has an appropriate image representation
-                JLabel cardLabel = new JLabel(new ImageIcon(cardPanel.loadCardImage(card)));
+                JLabel cardLabel = new JLabel(scaledIcon);
                 // Optionally, you can set the bounds or position of each card
-                cardLabel.setBounds(xOffset, 450, 80, 120);
-                xOffset += 30;
+                cardLabel.setBounds(xOffset, 500, cardWidth, cardHeight);
+
+                xOffset -= 30;
                 // Add the card label to the card panel
                 cardPanel.add(cardLabel);
             }
