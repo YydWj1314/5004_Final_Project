@@ -69,7 +69,6 @@ public class ClientController {
 
         startHandlingMsg();
 
-        // send player name received from loginFrame to server
         sendPlayerName();
     }
 
@@ -130,7 +129,7 @@ public class ClientController {
     }
 
     /**
-     *
+     * Send player name taken from login frame to backend
      */
     private void sendPlayerName() {
         // Encapsulate player name to JOIN command
@@ -150,60 +149,76 @@ public class ClientController {
     private void handleMessage(String message) {
         System.out.println("========== Client handleMessage info==========");
 
-        String[] parts = message.split(" ");
-        String commandType = parts[0];
+        String[] commandParts = message.split(" ");
+        String commandType = commandParts[0];
         String commandArgs = message.substring(commandType.length()).trim();
 
         switch (commandType) {
-            case "WELCOME" -> {
-                // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
-                System.out.println("----- WELCOME -----");
-                if (eventListener != null) {
-                    String welcomeString = String.format(
-                            "%s Welcome! Online player number: %s.", parts[1], parts[3]
-                    );
+            case "WELCOME" -> handleWelcomeCmd(commandParts);
 
-                    // Getting socket send by server
-                    String receivedSocketAddress = parts[4];
-                    // Getting client local socket
-                    String localSocketAddress = socket.getLocalSocketAddress().toString();
-                    // Setting id for player
-                    if (receivedSocketAddress.equals(localSocketAddress)) {
-                        this.localPlayer.setId(Integer.parseInt(parts[2]));
-                        log.info("Set ID for current player: {}", this.localPlayer.getId());
-                    }
+            case "START" -> handleStartCmd(commandArgs);
 
-                    eventListener.onTextAreaUpdated(welcomeString);
-                }
-            }
-            case "START" -> {
-                System.out.println("----- START -----");
-                if (eventListener != null) {
-                    // Update system message area with the game start information
-                    eventListener.onTextAreaUpdated("All players joined. Game is starting...");
+            // TODO : adding cmd here
+        }
+    }
 
-                    try {
-                        PlayerDTO playerDTO = JsonUtil.parseJson(commandArgs, PlayerDTO.class);
-                        System.out.println(playerDTO);
+    /**
+     * Function to handle WELCOME command
+     *
+     * @param commandParts command parts split
+     */
+    private void handleWelcomeCmd(String[] commandParts){
+        // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
+        System.out.println("----- WELCOME COMMAND-----");
+        if (eventListener != null) {
+            String welcomeString = String.format(
+                    "%s Welcome! Online player number: %s.", commandParts[1], commandParts[3]
+            );
 
-                        // TODO implementing this
-                        List<Card> playerHand = playerDTO.getPlayerHand();
-                        // Encapsulate cardVO list
-                        List<CardVO> cardVOs = playerHand.stream()
-                                .map(card -> new CardVO(card.getSuit(), card.getRank(), true))
-                                .collect(Collectors.toList());
-                        log.info("Mapped to CardVO list: {}", cardVOs);
-
-                        eventListener.onCardAreaUpdated(cardVOs);
-                    } catch (Exception e) {
-                        log.error("Failed to parse player hands", e);
-                    }
-
-                    // Optional: Send a special message or mark the end of message update (if necessary)
-                    eventListener.onTextAreaUpdated("******** Game Start, Good Luck ********");
-                }
+            // Getting socket send by server
+            String receivedSocketAddress = commandParts[4];
+            // Getting client local socket
+            String localSocketAddress = socket.getLocalSocketAddress().toString();
+            // Setting id for player
+            if (receivedSocketAddress.equals(localSocketAddress)) {
+                this.localPlayer.setId(Integer.parseInt(commandParts[2]));
+                log.info("Set ID for current player: {}", this.localPlayer.getId());
             }
 
+            eventListener.onTextAreaUpdated(welcomeString);
+        }
+    }
+
+    /**
+     * Function to START command
+     *
+     * @param commandArgs
+     */
+    private void handleStartCmd(String commandArgs){
+        System.out.println("----- START COMMAND-----");
+        if (eventListener != null) {
+            // Update system message area with the game start information
+            eventListener.onTextAreaUpdated("All players joined. Game is starting...");
+
+            try {
+                PlayerDTO playerDTO = JsonUtil.parseJson(commandArgs, PlayerDTO.class);
+                System.out.println(playerDTO);
+
+                // TODO implementing this
+                List<Card> playerHand = playerDTO.getPlayerHand();
+                // Encapsulate cardVO list
+                List<CardVO> cardVOs = playerHand.stream()
+                        .map(card -> new CardVO(card.getSuit(), card.getRank(), true))
+                        .collect(Collectors.toList());
+                log.info("Mapped to CardVO list: {}", cardVOs);
+
+                eventListener.onCardAreaUpdated(cardVOs);
+            } catch (Exception e) {
+                log.error("Failed to parse player hands", e);
+            }
+
+            // Optional: Send a special message or mark the end of message update (if necessary)
+            eventListener.onTextAreaUpdated("******** Game Start, Good Luck ********");
         }
     }
 }

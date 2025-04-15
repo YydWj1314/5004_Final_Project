@@ -10,14 +10,15 @@ import java.net.Socket;
 public class ClientReceiveThread extends Thread {
     private static final Logger log = LoggerFactory.getLogger(ClientReceiveThread.class);
 
-    private Socket socket;
+    private final Socket socket;
 
-    private SocketHandler socketHandler;
-
-    private ClientReceiveMQ clientReceiveMQ;
+    private final ClientReceiveMQ clientReceiveMQ;
 
     /**
      * Constructor of thread
+     * Constructor of client receive thread
+     * This thread is used to take message from ClientReceiveMQ
+     * and put message to ClientReceiveMQ
      *
      * @param socket socket with target IP and port
      */
@@ -34,7 +35,7 @@ public class ClientReceiveThread extends Thread {
     @Override
     public void run() {
         System.out.println("======== ClientReceiveThread info ========");
-        socketHandler = new SocketHandler(socket);
+        SocketHandler socketHandler = new SocketHandler(socket);
         log.info("ClientReceiveThread: Starts Receiving Msg...");
         while (true) {
             String message = socketHandler.receiveMessage();

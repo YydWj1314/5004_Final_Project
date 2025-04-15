@@ -8,6 +8,11 @@ import java.util.List;
 public class ControllerEventListener implements EventListener {
     private final MainFrame mainFrame;
 
+    /**
+     * Constructor of listener
+     *
+     * @param mainFrame main frame of the game
+     */
     public ControllerEventListener(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }

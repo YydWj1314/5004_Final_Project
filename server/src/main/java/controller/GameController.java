@@ -42,6 +42,9 @@ public class GameController {
 
     private Deck deck;
 
+    /**
+     *
+     */
     public GameController() {
         this.playerList = Collections.synchronizedList(new ArrayList<>());
         serverReceiveMQ = new ServerReceiveMQ();

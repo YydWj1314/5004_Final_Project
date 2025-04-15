@@ -18,26 +18,18 @@ public class ClientSendThread extends Thread {
 
 
     /**
-     * Constructor of thread
+     * Constructor of client send thread
+     * This thread is used to take message from ClientSendMQ
+     * and use SocketHandler to send message from frontend to backend
      *
      * @param socket socket with target IP and port
-     * @param clientSendMQ
+     * @param clientSendMQ message queue of this thread
      */
     public ClientSendThread(Socket socket, ClientSendMQ clientSendMQ) {
         this.socket = socket;
         this.clientSendMQ = clientSendMQ;
         this.socketHandler = new SocketHandler(socket);
         log.info("ClientSendThread Initialized Successfully, Socket:{}", socket);
-    }
-
-    /**
-     * @param message
-     */
-    public void sendMessage(String message) {
-        if (message != null) {
-            this.clientSendMQ.addMessage(message);
-            log.info("Message send successfully: {}", message);
-        }
     }
 
     /**

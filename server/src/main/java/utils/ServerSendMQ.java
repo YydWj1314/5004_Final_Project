@@ -20,7 +20,6 @@ public class ServerSendMQ {
 
     /**
      * Adds a message to the message queue for sending.
-     *
      * This method stores the message and the corresponding socket in a MessageEntry
      * and puts it into the message queue to be processed by the sender thread.
      *
@@ -41,7 +40,6 @@ public class ServerSendMQ {
 
     /**
      * Takes a message from the queue to be sent.
-     *
      * This method retrieves and removes the head of the message queue. If the queue is empty,
      * the thread will block until a message is available to send.
      *

@@ -16,7 +16,6 @@ public class ServerReceiveMQ {
 
     /**
      * Adds a message to the message queue.
-     *
      * This method stores the message and the corresponding socket in a MessageEntry
      * and puts it into the message queue for processing.
      *
@@ -37,7 +36,6 @@ public class ServerReceiveMQ {
 
     /**
      * Takes a message from the queue.
-     *
      * This method retrieves and removes the head of the message queue. If the queue is empty,
      * the thread will block until a message is available.
      *
