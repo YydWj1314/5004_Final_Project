@@ -29,13 +29,12 @@ public class MessageBroadcaster {
    * @param message The message to be broadcasted to all players.
    */
   public void broadcastMessage(List<Player> playerList, String message) {
+    log.info("Broadcasting Message: {}", message);
     // Iterate over all players and send the message to their respective sockets
     for (Player player : playerList) {
       serverSendMQ.addMessage(player.getSocket(), message);
     }
 
-    // Log the message being broadcasted for debugging or monitoring
-    log.info("Broadcasting Message: {}", message);
   }
 }
 

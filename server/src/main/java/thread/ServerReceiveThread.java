@@ -31,9 +31,8 @@ public class ServerReceiveThread extends Thread{
     @Override
     public void run(){
         System.out.println("======== ServerReceiveThread info ========");
-        socketHandler = new SocketHandler(socket);
         log.info("ServerReceiveThread Starts Receiving Msg...");
-
+        socketHandler = new SocketHandler(socket);
         while(true){
             String message = socketHandler.receiveMessage();
             log.info("ClientReceiveThread received msg successfully: {}", message);

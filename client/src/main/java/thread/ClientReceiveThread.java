@@ -39,7 +39,7 @@ public class ClientReceiveThread extends Thread {
         while (true) {
             String message = socketHandler.receiveMessage();
             log.info("ClientReceiveThread received msg successfully: {}", message);
-            clientReceiveMQ.addMessage(socket, message);
+            clientReceiveMQ.addMessage(message);
         }
     }
 

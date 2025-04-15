@@ -8,86 +8,43 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class Card implements Comparable<Card> {
+public class  Card implements Comparable<Card> {
 
-  private CardSuit cardSuit;
-  private CardRank cardRank;
-  private Image cardImage;  // Image to represent the card's visual
+  private CardSuit suit;
+  private CardRank rank;
 
-  // Coordinates for rendering the card on the panel
-  private int x, y;
 
   /**
-   * Constructs a new Card with the specified suit and rank, and loads its image.
+   * Constructor of cards
    *
-   * @param cardSuit the suit of the card
-   * @param cardRank the rank of the card
+   * @param cardSuit card suit
+   * @param cardRank card rank
    */
-  public Card(CardSuit cardSuit, CardRank cardRank, int x, int y) {
-    this.cardSuit = cardSuit;
-    this.cardRank = cardRank;
-    this.x = x;
-    this.y = y;
-
-    // Load the card image based on the suit and rank
-    this.cardImage = loadCardImage(cardSuit, cardRank);
-  }
-  public Card(CardSuit suit, CardRank rank) {
-    this.cardSuit = suit;
-    this.cardRank = rank;
-    this.cardImage = loadCardImage(cardSuit, cardRank);
-    this.x = 0; // default value
-    this.y = 0;
-  }
-
-  /**
-   * Loads the image for the card based on its suit and rank.
-   *
-   * @param cardSuit the suit of the card
-   * @param cardRank the rank of the card
-   * @return the image representing the card
-   */
-  private Image loadCardImage(CardSuit cardSuit, CardRank cardRank) {
-    String imagePath = "/pokers/" + cardRank.toString() + "_of_" + cardSuit.getName().toLowerCase() + ".png";
-    ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
-    return icon.getImage();  // Return the card image
+  public Card(CardSuit cardSuit, CardRank cardRank) {
+    this.suit = cardSuit;
+    this.rank = cardRank;
   }
 
   /**
    * @return the suit of this card
    */
-  public CardSuit getCardSuit() {
-    return cardSuit;
+  public CardSuit getSuit() {
+    return suit;
   }
 
   /**
    * @return the rank of this card
    */
-  public CardRank getCardRank() {
-    return cardRank;
+  public CardRank getRank() {
+    return rank;
   }
 
-  /**
-   * @return the x coordinate of this card for rendering
-   */
-  public int getX() {
-    return x;
+  public void setSuit(CardSuit suit) {
+    this.suit = suit;
   }
 
-  /**
-   * @return the y coordinate of this card for rendering
-   */
-  public int getY() {
-    return y;
-  }
-
-  /**
-   * Renders the card image at the specified x and y coordinates.
-   *
-   * @param g the Graphics object used for drawing
-   */
-  public void render(Graphics g) {
-    g.drawImage(cardImage, x, y, null);  // Draw the card at its position
+  public void setRank(CardRank rank) {
+    this.rank = rank;
   }
 
   /**
@@ -99,8 +56,8 @@ public class Card implements Comparable<Card> {
    */
   @Override
   public int compareTo(Card otherCard) {
-    return Comparator.comparing(Card::getCardRank)
-        .thenComparing(Card::getCardSuit)
+    return Comparator.comparing(Card::getRank)
+        .thenComparing(Card::getSuit)
         .compare(this, otherCard);
   }
 
@@ -116,7 +73,7 @@ public class Card implements Comparable<Card> {
       return false;
     }
     Card card = (Card) o;
-    return cardSuit == card.cardSuit && cardRank == card.cardRank;
+    return suit == card.suit && rank == card.rank;
   }
 
   /**
@@ -126,7 +83,7 @@ public class Card implements Comparable<Card> {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(cardSuit, cardRank);
+    return Objects.hash(suit, rank);
   }
 
   /**
@@ -136,7 +93,7 @@ public class Card implements Comparable<Card> {
    */
   @Override
   public String toString() {
-    return cardSuit + "" + cardRank;
+    return suit+ "" + rank;
   }
 }
 

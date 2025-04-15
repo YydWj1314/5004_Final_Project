@@ -11,7 +11,12 @@ public class ServerSendMQ {
     private static final Logger log = LoggerFactory.getLogger(ServerSendMQ.class);
 
     // A thread-safe queue for storing messages to be sent to clients
-    private static final BlockingQueue<MessageEntry> messageQueue = new LinkedBlockingDeque<>();
+    private final BlockingQueue<MessageEntry> messageQueue;
+
+
+    public ServerSendMQ() {
+        this.messageQueue = new LinkedBlockingDeque<>();
+    }
 
     /**
      * Adds a message to the message queue for sending.
@@ -26,7 +31,7 @@ public class ServerSendMQ {
         try {
             // Put the new message entry into the message queue
             messageQueue.put(new MessageEntry(socket, message));
-            log.info("ServerSendMQ put: message{}, socket {}", message, socket);
+            log.info("Message has been put: message{}, socket {}", message, socket);
         } catch (InterruptedException e) {
             // Log error if the thread is interrupted while adding a message
             log.error("ServerSendMQ Put Error, Thread Interrupted ", e);
@@ -46,7 +51,7 @@ public class ServerSendMQ {
         try {
             // Take a message entry from the queue
             MessageEntry entry = messageQueue.take();
-            log.info("ServerSendMQ took: message:{}, socket{}", entry.message, entry.socket);
+            log.info("Message has been taken: message:{}, socket{}", entry.message, entry.socket);
             return entry;
         } catch (InterruptedException e) {
             // Log error if the thread is interrupted while taking a message

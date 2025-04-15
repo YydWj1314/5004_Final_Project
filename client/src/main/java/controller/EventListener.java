@@ -3,9 +3,11 @@ package controller;
 //import model.CardVO;
 //import model.Player;
 
+import model.CardVO;
+
 import java.util.List;
 
-public interface ClientControllerListener {
+public interface EventListener {
 
   /**
    * Updates the system message area with the given message.
@@ -19,12 +21,12 @@ public interface ClientControllerListener {
    */
   void onTextAreaUpdated(String message, Object... args);
 
-  /**
-   * This method is called when the game is triggered to start. It allows the listener (typically
-   * the UI) to take action when the game begins, such as enabling game controls or displaying a
-   * "game started" message.
-   */
-  void onGameStart();
 
-  void onPlayerHandUpdated(Object playerDTO);
+  /**
+   * @param CardVOList
+   * @param args
+   */
+  public void onCardAreaUpdated(List<CardVO> CardVOList, Object... args);
+
+
 }

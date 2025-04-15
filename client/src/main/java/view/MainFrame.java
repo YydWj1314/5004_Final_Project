@@ -2,31 +2,29 @@ package view;
 
 import controller.ClientController;
 
-import controller.ClientControllerListener;
+import controller.ControllerEventListener;
+import controller.EventListener;
 
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
 
 import model.Card;
+import model.CardVO;
 import model.PlayerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
 import thread.ClientSendThread;
 
-import java.net.Socket;
-
 /**
  * The {@code MainFrame} class represents the main game window.
  * It contains a background panel, a system message area, and a play button.
  */
-public class MainFrame extends JFrame implements ClientControllerListener {
+public class MainFrame extends JFrame {
     private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
 
     private CardPanel cardPanel;
@@ -35,18 +33,15 @@ public class MainFrame extends JFrame implements ClientControllerListener {
 
     private JButton playButton;
 
-    private ClientSendThread clientSendThread;
-
-    private ClientReceiveThread clientReceiveThread;
-
     private String message;
 
     private ClientController clientController;
-//  private ClientSendThread clientSendThread;
-//  private ClientReceiveThread clientReceiveThread;
-//  private model.Player currentPlayer = new model.Player();
-//  private List<CardVO> cardVOList = new ArrayList<>();
+
+    private List<CardVO> cardVOList = new ArrayList<>();
+
 //  private List<CardVO> selectedCardVOList = new ArrayList<>();
+//  private model.Player currentPlayer = new model.Player();
+
 
     /**
      * Constructs the {@code MainFrame} and initializes UI components.
@@ -56,7 +51,8 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         this.message = message;
 
         // Initialize ClientController
-        clientController = new ClientController(message, this);
+        ControllerEventListener eventListener = new ControllerEventListener(this);
+        clientController = new ClientController(message, eventListener);
 
         // Setting window attributes
         this.setSize(1200, 700);
@@ -81,6 +77,8 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         scrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         cardPanel.add(scrollPane);
+        Font font = new Font("Arial", Font.PLAIN, 15);
+        systemMessageArea.setFont(font);
 
 
         // Initializing `playButton`
@@ -92,69 +90,48 @@ public class MainFrame extends JFrame implements ClientControllerListener {
         log.info("MainFrame displayed successfully");
     }
 
-    @Override
-    public void onTextAreaUpdated(String message, Object... args) {
+    // TODO update
+    public void updateTextField(String message, Object... args){
+        log.info("Updating Text Area..." );
         SwingUtilities.invokeLater(() -> systemMessageArea.append(message + "\n"));
-        log.info("TextFiled Update: {}", message );
+
     }
 
-    @Override
-    public void onGameStart() {
-        // Use invokeLater to ensure the UI updates happen on the Event Dispatch Thread (EDT)
+    // TODO update
+    public void updateCardArea(List<CardVO> cardVOList, Object... args){
+        log.info("Updating Card Area...");
         SwingUtilities.invokeLater(() -> {
-            // Append the game start message to the system message area
-            systemMessageArea.append("Game Started!\n");
-            // Enable the play button
-            playButton.setEnabled(true);
+            this.cardPanel.revalidate();
+            this.cardPanel.repaint();
+
+            // Creating Timer，interval 300ms
+            Timer timer = new Timer(100, null);
+            final int[] i = {0};             // counter
+            timer.addActionListener(e -> {
+                if (i[0] < cardVOList.size()) {
+                    CardVO cardVO = cardVOList.get(i[0]);
+                    cardVO.setUp(true);
+                    this.cardVOList.add(cardVO);
+
+                    int xPos = 300 + 30 * i[0]++;
+                    int yPos = 450;
+                    cardVO.setBounds(xPos, yPos, 150, 200);
+
+                    // Adding mouse press event
+//                    cardVO.addMouseListener(new CardClickListener(cardVO, xPos, yPos));
+
+                    this.cardPanel.add(cardVO);
+
+                    this.cardPanel.setComponentZOrder(cardVO, 0);
+
+                    this.cardPanel.revalidate();
+                    this.cardPanel.repaint();
+                } else {
+                    ((Timer) e.getSource()).stop(); // stop Timer
+                }
+            });
+
+            timer.start();
         });
-        log.info("Game Start triggered from Server.");
     }
-
-    @Override
-    public void onPlayerHandUpdated(Object playerDTO) {
-        // Ensure that UI updates are done on the Event Dispatch Thread (EDT)
-        SwingUtilities.invokeLater(() -> {
-            // Cast the playerDTO to PlayerDTO
-            PlayerDTO player = (PlayerDTO) playerDTO;
-
-            // Clear the existing cards from the panel before adding new ones
-            cardPanel.removeAllCards();
-
-            int xOffset = 250;
-            int cardWidth = 80;
-            int cardHeight = 120;
-
-            // Display with order
-            List<Card> playerHands = player.getPlayerHand();
-            Collections.sort(playerHands);
-            Collections.reverse(playerHands);
-
-            // Update the card panel with the new player's hand
-            // Loop through the player's hand and add each card to the card panel
-            for (Card card : playerHands) {
-                // Load and scale image
-                Image originalImage = cardPanel.loadCardImage(card);
-                Image scaledImage = originalImage.getScaledInstance(cardWidth, cardHeight, Image.SCALE_SMOOTH);
-                ImageIcon scaledIcon = new ImageIcon(scaledImage);
-
-                // Create a JLabel with the card image or text
-                JLabel cardLabel = new JLabel(scaledIcon);
-                // Optionally, you can set the bounds or position of each card
-                cardLabel.setBounds(xOffset, 500, cardWidth, cardHeight);
-
-                xOffset -= 30;
-                // Add the card label to the card panel
-                cardPanel.add(cardLabel);
-            }
-
-            // Revalidate and repaint the cardPanel to ensure the UI updates correctly
-            cardPanel.revalidate();
-            cardPanel.repaint();
-        });
-
-        log.info("Player hand updated: {}", playerDTO);
-    }
-
-
-
 }

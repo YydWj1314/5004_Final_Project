@@ -1,23 +1,22 @@
 package enumeration;
 
 public enum CommandType {
-    // Cast Type:
+    // Message Casting Type:
     UNICAST("UNIT"),
     BROADCAST("BROAD"),
 
     // Server command:
     JOIN("JOIN"),
-    JSON("JSON"),
+    START("START"),
 
     // Client command:
     WELCOME("WELCOME"),
-    CLIENT_PLAY("CLIENT_PLAY"),
-    START("START");
+    CLIENT_PLAY("CLIENT_PLAY");
 
 
     private final String type;
 
-   CommandType(String message) {
+    CommandType(String message) {
         this.type = message;
     }
 

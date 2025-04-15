@@ -1,8 +1,9 @@
 package controller;
 
-import com.alibaba.fastjson.JSONArray;
 import enumeration.CommandType;
-import java.util.List;
+
+import model.Card;
+import model.CardVO;
 import model.Player;
 import model.PlayerDTO;
 import org.slf4j.Logger;
@@ -15,6 +16,10 @@ import utils.CommandBuilder;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import utils.JsonUtil;
 
 
@@ -32,15 +37,15 @@ public class ClientController {
 
     private Socket socket;
 
-    private String playerName;  // player name from login frame
+    private final String playerName;  // player name from login frame
 
-    private ClientSendMQ clientSendMQ;
+    private final ClientSendMQ clientSendMQ;
 
-    private ClientReceiveMQ clientReceiveMQ;
+    private final ClientReceiveMQ clientReceiveMQ;
 
-    private ClientControllerListener listener;
+    private final EventListener eventListener;
 
-    private Player localPlayer;
+    private final Player localPlayer;
 
 
     /**
@@ -49,11 +54,11 @@ public class ClientController {
      * @param playerName player name input in login frame
      *                   received from login frame
      */
-    public ClientController(String playerName, ClientControllerListener listener) {
-        this.playerName = playerName;
-        this.listener = listener;
+    public ClientController(String playerName, EventListener eventListener) {
         this.clientSendMQ = new ClientSendMQ();
         this.clientReceiveMQ = new ClientReceiveMQ();
+        this.playerName = playerName;
+        this.eventListener = eventListener;
         this.localPlayer = new Player(playerName);
 
         createSocket();
@@ -89,7 +94,7 @@ public class ClientController {
      * and start the thread
      */
     private void startClientSendThread() {
-        // Start ClientSendThread
+
         ClientSendThread clientSendThread = new ClientSendThread(socket, clientSendMQ);
         clientSendThread.start();
         log.info("ClientSendThread Started Successfully");
@@ -114,11 +119,11 @@ public class ClientController {
         new Thread(() -> {
             log.info("ClientController Listening for Messages...");
             while (true) {
-                ClientReceiveMQ.MessageEntry entry = clientReceiveMQ.takeMessage();
-                if (entry != null) {
-                    log.info("CC has taken message: {}", entry.message);
+                String message = clientReceiveMQ.takeMessage();
+                if (message != null && !message.isEmpty()) {
+                    log.info("CC has taken message: {}", message);
                     // Handling messages
-                    handleMessage(entry.message);
+                    handleMessage(message);
                 }
             }
         }).start();
@@ -132,7 +137,7 @@ public class ClientController {
         // eg: JOIN yyd
         String joinCommand = CommandBuilder.buildCommand(CommandType.JOIN, playerName);
         // Add command to sendMQ
-        clientSendMQ.addMessage(socket, joinCommand);
+        this.clientSendMQ.addMessage(joinCommand);
         log.info("JoinCommand ==> clientSendMQ: {}", joinCommand);
     }
 
@@ -153,7 +158,7 @@ public class ClientController {
             case "WELCOME" -> {
                 // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
                 System.out.println("----- WELCOME -----");
-                if (listener != null) {
+                if (eventListener != null) {
                     String welcomeString = String.format(
                             "%s Welcome! Online player number: %s.", parts[1], parts[3]
                     );
@@ -168,33 +173,34 @@ public class ClientController {
                         log.info("Set ID for current player: {}", this.localPlayer.getId());
                     }
 
-                    listener.onTextAreaUpdated(welcomeString);
+                    eventListener.onTextAreaUpdated(welcomeString);
                 }
             }
             case "START" -> {
-                log.info("Received START command from server.");
-                if (listener != null) {
+                System.out.println("----- START -----");
+                if (eventListener != null) {
                     // Update system message area with the game start information
-                    listener.onTextAreaUpdated("All players joined. Game is starting...");
+                    eventListener.onTextAreaUpdated("All players joined. Game is starting...");
 
-                    // Trigger the game start action in the UI
-                    listener.onGameStart();
-                    log.info("------On Game Start------");
                     try {
-                        // Parse JSON message to get player hand details
-                        log.info("Command Args:");
-                        log.info(commandArgs);
                         PlayerDTO playerDTO = JsonUtil.parseJson(commandArgs, PlayerDTO.class);
-                        log.info("Update player hand start");
-                        // Update the UI with the player's hand
-                        listener.onPlayerHandUpdated(playerDTO);
-                        log.info("Update player hand success");
+                        System.out.println(playerDTO);
+
+                        // TODO implementing this
+                        List<Card> playerHand = playerDTO.getPlayerHand();
+                        // Encapsulate cardVO list
+                        List<CardVO> cardVOs = playerHand.stream()
+                                .map(card -> new CardVO(card.getSuit(), card.getRank(), true))
+                                .collect(Collectors.toList());
+                        log.info("Mapped to CardVO list: {}", cardVOs);
+
+                        eventListener.onCardAreaUpdated(cardVOs);
                     } catch (Exception e) {
                         log.error("Failed to parse player hands", e);
                     }
 
                     // Optional: Send a special message or mark the end of message update (if necessary)
-                    listener.onTextAreaUpdated("***");
+                    eventListener.onTextAreaUpdated("******** Game Start, Good Luck ********");
                 }
             }
 

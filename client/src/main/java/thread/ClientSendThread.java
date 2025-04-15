@@ -26,15 +26,19 @@ public class ClientSendThread extends Thread {
     public ClientSendThread(Socket socket, ClientSendMQ clientSendMQ) {
         this.socket = socket;
         this.clientSendMQ = clientSendMQ;
+        this.socketHandler = new SocketHandler(socket);
         log.info("ClientSendThread Initialized Successfully, Socket:{}", socket);
     }
 
-//    public void sendMessage(String newMessage) {
-//        if (newMessage != null) {
-//            socketHandler.sendMessage(newMessage);
-//            log.info("Message send successfully: {}", newMessage);
-//        }
-//    }
+    /**
+     * @param message
+     */
+    public void sendMessage(String message) {
+        if (message != null) {
+            this.clientSendMQ.addMessage(message);
+            log.info("Message send successfully: {}", message);
+        }
+    }
 
     /**
      * Override run() method for this thread
@@ -47,7 +51,7 @@ public class ClientSendThread extends Thread {
         log.info("ClientSendThread: Starts Sending Msg...");
 
         while (true) {  // busy waiting
-            String message = clientSendMQ.takeMessage().message;
+            String message = clientSendMQ.takeMessage();
             log.info("ClientSendThread took msg successfully: {}", message);
             socketHandler.sendMessage(message);
         }

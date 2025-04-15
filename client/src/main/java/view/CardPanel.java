@@ -74,7 +74,7 @@ public class CardPanel extends JPanel {
    * @return the image of the card, or null if not found
    */
   Image loadCardImage(Card card) {
-    String imagePath = "/pokers/" + card.getCardRank().toString() + "_of_" + card.getCardSuit().getName().toLowerCase() + ".png";
+    String imagePath = "/pokers/" + card.getRank().toString() + "_of_" + card.getSuit().getName().toLowerCase() + ".png";
     ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
     return icon.getImage();
   }

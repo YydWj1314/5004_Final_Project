@@ -68,7 +68,7 @@ public class LoginFrame extends JFrame {
             // 2. Getting username
             String username = unameJTextField.getText();
             // 3. Encapsulating command
-//      String joinMessage = CommandBuilder.buildCommand(CommandType.JOIN, username);
+
             // 4. Jumping to main frame with command
             try {
                 new MainFrame(username);
