@@ -230,4 +230,11 @@ and encapsulated the player information into a newly created PlayerDTO class to 
 - Implemented the logic in MainFrame for each player to display their own hand, and adjusted the display order of the cards.
 - Ensured that each player can only see their own cards.
 
+# update @ 2025/04/15 by JL
+- Implemented card selection in MainFrame by adding a CardClickListener class. (maybe too crowded in the MainFrame class)
+- Added animation to selected cards(3 cards).
+- Displaying selected cards in the center of the window after pressed play button.
+- Added CLIENT_PLAY and PLAY_RESULT command type.
+- Updated ClientController and GameController to handle new command types and card play functionality.
+
 }
