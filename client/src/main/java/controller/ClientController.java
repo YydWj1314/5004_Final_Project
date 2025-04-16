@@ -141,6 +141,16 @@ public class ClientController {
     }
 
     /**
+     * Sends the play command with the selected cards to the server
+     *
+     * @param playCommand the formatted play command with selected cards
+     */
+    public void sendPlayCommand(String playCommand) {
+        this.clientSendMQ.addMessage(playCommand);
+        log.info("PlayCommand ==> clientSendMQ: {}", playCommand);
+    }
+
+    /**
      * Handle message taken from messageBuffer
      *
      * @param message message taken from messageBuffer
