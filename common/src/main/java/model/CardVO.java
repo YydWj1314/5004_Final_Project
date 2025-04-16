@@ -12,6 +12,9 @@ public class CardVO extends JLabel {
     private CardRank rank;
     private boolean isUp;
 
+    private boolean isSelected;
+    private int originalY; // To store original Y position for animation
+
     public CardVO(){
         this.setSize(105, 150);
     }
@@ -49,6 +52,22 @@ public class CardVO extends JLabel {
 
     public void setSuit(CardSuit suit) {
         this.suit = suit;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public void saveOriginalY(int y) {
+        this.originalY = y;
+    }
+
+    public int getOriginalY() {
+        return originalY;
     }
 
     public void turnUp() {

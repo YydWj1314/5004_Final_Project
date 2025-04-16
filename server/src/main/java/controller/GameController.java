@@ -168,6 +168,65 @@ public class GameController {
                     log.info("Finished sending players' info to client");
                 }
             }
+            case "CLIENT_PLAY" -> {
+                log.info("------ CLIENT_PLAY COMMAND -----");
+                handleClientPlay(commandArgs, socket);
+            }
+        }
+    }
+
+
+    /**
+     * Handles a client play command
+     *
+     * @param commandArgs The command arguments containing the card data
+     * @param socket The client socket that sent the command
+     */
+    private void handleClientPlay(String commandArgs, Socket socket) {
+        try {
+            // Parse the selected cards from JSON
+            List<Card> selectedCards = JsonUtil.parseJson(commandArgs, List.class);
+
+            // Find the player
+            Player currentPlayer = null;
+            for (Player player : playerList) {
+                if (player.getSocket().equals(socket)) {
+                    currentPlayer = player;
+                    break;
+                }
+            }
+
+            if (currentPlayer == null) {
+                log.error("Couldn't find player for socket: {}", socket);
+                return;
+            }
+
+            // Process the play：game logic here
+            String playAnnouncement = CommandBuilder.buildCommand(
+                CommandType.BROADCAST,
+                "Player " + currentPlayer.getName() + " played " + selectedCards.size() + " cards"
+            );
+
+            // Broadcast to all players
+            messageBroadcaster.broadcastMessage(playerList, playAnnouncement);
+
+            // TODO: game logic
+
+            // Send back the result to the player who played
+            PlayerDTO resultDTO = new PlayerDTO(
+                currentPlayer.getId(),
+                currentPlayer.getName(),
+                currentPlayer.getHand() // Maybe update this with new cards
+            );
+
+            String resultJson = JsonUtil.toJson(resultDTO);
+            String resultCommand = CommandBuilder.buildCommand(CommandType.PLAY_RESULT, resultJson);
+
+            // Send the result back to the player
+            serverSendMQ.addMessage(currentPlayer.getSocket(), resultCommand);
+
+        } catch (Exception e) {
+            log.error("Error handling client play", e);
         }
     }
 }

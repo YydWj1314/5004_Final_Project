@@ -8,6 +8,7 @@ public enum CommandType {
     // Server command:
     JOIN("JOIN"),
     START("START"),
+    PLAY_RESULT("PLAY_RESULT"),
 
     // Client command:
     WELCOME("WELCOME"),
