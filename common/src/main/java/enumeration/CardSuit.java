@@ -1,7 +1,7 @@
 package enumeration;
 
 /**
- * Represents the suit of a playing card.
+ * Represents the suit of a playing card
  */
 public enum CardSuit {
   CLUBS("CLUBS", "♣"),
@@ -13,7 +13,7 @@ public enum CardSuit {
   private final String symbol;
 
   /**
-   * Constructs a CardSuit with the specified name and symbol.
+   * Constructs a CardSuit with the specified name and symbol
    *
    * @param name   the name of the card suit (e.g., "HEARTS")
    * @param symbol the symbol associated with the card suit (e.g., "♥")

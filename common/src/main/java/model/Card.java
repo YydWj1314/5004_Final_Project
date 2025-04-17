@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class  Card implements Comparable<Card> {
+public class Card {
 
   private CardSuit suit;
   private CardRank rank;
@@ -48,20 +48,6 @@ public class  Card implements Comparable<Card> {
   }
 
   /**
-   * Compares this card with the specified card for order.
-   *
-   * @param otherCard the card to be compared
-   * @return a negative integer, zero, or a positive integer as this card is less than, equal to,
-   *         or greater than the specified card
-   */
-  @Override
-  public int compareTo(Card otherCard) {
-    return Comparator.comparing(Card::getRank)
-        .thenComparing(Card::getSuit)
-        .compare(this, otherCard);
-  }
-
-  /**
    * Indicates whether some other object is "equal to" this one.
    *
    * @param o the reference object with which to compare
@@ -93,7 +79,7 @@ public class  Card implements Comparable<Card> {
    */
   @Override
   public String toString() {
-    return suit+ "" + rank;
+    return suit + "" + rank;
   }
 }
 
