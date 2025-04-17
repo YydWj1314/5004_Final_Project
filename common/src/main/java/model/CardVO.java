@@ -1,6 +1,4 @@
 package model;
-
-
 import enumeration.CardRank;
 import enumeration.CardSuit;
 
