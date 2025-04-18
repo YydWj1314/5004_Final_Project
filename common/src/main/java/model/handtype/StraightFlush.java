@@ -12,10 +12,9 @@ import model.Hand;
  * This is the strongest hand in this three‑card case
  */
 public class StraightFlush extends Hand {
-  protected List<Card> cards;
 
   public StraightFlush(List<Card> cards) {
-    super(cards, HandRank.STRAIGHT_FLUSH);
+    super(cards);
   }
 
   /**
@@ -24,7 +23,7 @@ public class StraightFlush extends Hand {
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.STRAIGHT_FLUSH;
   }
 
   /**
@@ -33,7 +32,7 @@ public class StraightFlush extends Hand {
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.STRAIGHT_FLUSH.getRankValue();
   }
 
   /**

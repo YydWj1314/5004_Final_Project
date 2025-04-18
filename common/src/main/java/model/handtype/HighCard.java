@@ -10,10 +10,9 @@ import utils.HandEvaluator;
  * Represents a High Card: hand’s strength is determined solely by its highest card
  */
 public class HighCard extends Hand {
-  protected List<Card> cards;
 
   public HighCard(List<Card> cards) {
-    super(cards, HandRank.HIGH_CARD);
+    super(cards);
   }
 
   /**
@@ -22,7 +21,7 @@ public class HighCard extends Hand {
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.HIGH_CARD;
   }
 
   /**
@@ -31,7 +30,7 @@ public class HighCard extends Hand {
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.HIGH_CARD.getRankValue();
   }
 
 

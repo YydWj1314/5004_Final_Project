@@ -12,11 +12,8 @@ import model.Hand;
  */
 public class Flush extends Hand {
 
-  /** cards that make up this flush hand */
-  protected List<Card> cards;
-
   public Flush(List<Card> cards) {
-    super(cards, HandRank.FLUSH);
+    super(cards);
   }
 
   /**
@@ -25,7 +22,7 @@ public class Flush extends Hand {
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.FLUSH;
   }
 
   /**
@@ -34,7 +31,7 @@ public class Flush extends Hand {
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.FLUSH.getRankValue();
   }
 
   /**

@@ -10,36 +10,38 @@ import model.Card;
 import model.Hand;
 
 /**
- * Represents a Pair: exactly two cards of the same rank
- * The strength of the hand is determined by the rank of the paired cards
+ * Represents a Pair: exactly two cards of the same rank The strength of the hand is determined by
+ * the rank of the paired cards
  */
 public class Pair extends Hand {
-  protected List<Card> cards;
 
   public Pair(List<Card> cards) {
-    super(cards, HandRank.PAIR);
+    super(cards);
   }
 
   /**
    * Returns the HandRank enumeration for this hand type
+   *
    * @return HandRank.PAIR
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.PAIR;
   }
 
   /**
    * Returns the numeric strength value associated with this hand type
+   *
    * @return integer value of HandRank.PAIR
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.PAIR.getRankValue();
   }
 
   /**
    * Returns the two cards that form the pair
+   *
    * @return list containing exactly the paired cards
    */
   @Override
@@ -56,6 +58,7 @@ public class Pair extends Hand {
 
   /**
    * Determines and returns the rank that appears exactly twice in this hand
+   *
    * @return the CardRank of the pair, or null if no pair is found
    */
   public CardRank getPairRank() {
@@ -76,6 +79,7 @@ public class Pair extends Hand {
 
   /**
    * Retrieves the one card that is not part of the pair
+   *
    * @return the non-paired Card, or null if not found
    */
   public Card getNonPairCard() {

@@ -35,7 +35,9 @@ public enum HandRank {
    */
   STRAIGHT_FLUSH(6);
 
-  /**numeric value indicating the relative strength of this hand type*/
+  /**
+   * numeric value indicating the relative strength of this hand type
+   */
   private final int rankValue;
 
   HandRank(int rankValue) {

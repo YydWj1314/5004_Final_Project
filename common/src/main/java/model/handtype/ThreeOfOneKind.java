@@ -11,10 +11,9 @@ import model.Hand;
  * Represents Three of a Kind: exactly three cards of same rank
  */
 public class ThreeOfOneKind extends Hand {
-  protected List<Card> cards;
 
   public ThreeOfOneKind(List<Card> cards) {
-    super(cards, HandRank.THREE_OF_A_KIND);
+    super(cards);
 
   }
 
@@ -24,7 +23,7 @@ public class ThreeOfOneKind extends Hand {
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.THREE_OF_A_KIND;
   }
 
 
@@ -34,7 +33,7 @@ public class ThreeOfOneKind extends Hand {
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.THREE_OF_A_KIND.getRankValue();
   }
 
 

@@ -7,24 +7,22 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Abstract base class representing a poker hand
- * Implements Comparable to allow comparing hands by their strength
+ * Abstract base class representing a poker hand Implements Comparable to allow comparing hands by
+ * their strength
  */
 public abstract class Hand implements Comparable<Hand> {
+
   // cards making up this hand
   protected List<Card> cards;
-  // types of cards
-  protected HandRank handRank;
 
   /**
-   * Constructs a Hand with the given cards and hand rank
-   * Subclasses should call this to initialize their card list and rank
-   * @param cards    list of Card objects that form this hand
-   * @param handRank the HandRank enum describing the type of hand
+   * Constructs a Hand with the given cards Subclasses should call this to initialize their card
+   * list
+   *
+   * @param cards list of Card objects that form this hand
    */
-  protected Hand(List<Card> cards, HandRank handRank) {
+  protected Hand(List<Card> cards) {
     this.cards = cards;
-    this.handRank = handRank;
   }
 
 
@@ -32,32 +30,35 @@ public abstract class Hand implements Comparable<Hand> {
    * @return the list of all cards in hand
    */
   public List<Card> getCards() {
-    return Collections.unmodifiableList(cards);
+    return cards;
   }
 
   /**
-   * Returns the HandRank enum value for this hand type(Straight, Pair...)
-   * Subclasses must implement to return their specific rank
+   * Returns the HandRank enum value for this hand type(Straight, Pair...) Subclasses must implement
+   * to return their specific rank
+   *
    * @return the HandRank of this hand
    */
   public abstract HandRank getHandName();
 
   /**
-   * Returns the numeric strength value of this hand
-   * Often derived from HandRank.getRankValue()
+   * Returns the numeric strength value of this hand Often derived from HandRank.getRankValue()
+   *
    * @return integer representing this hand's strength
    */
   public abstract int getHandValue();
 
   /**
-   * Returns the "main" cards that define this hand type
-   * For example, a Pair returns the two cards of the same rank
+   * Returns the "main" cards that define this hand type For example, a Pair returns the two cards
+   * of the same rank
+   *
    * @return a List of Card objects that are key to this hand
    */
   public abstract List<Card> getMainCards();
 
   /**
    * Compares this hand to another by their numerical hand values
+   *
    * @param other the Hand to compare against
    * @return negative if this is weaker, positive if stronger, zero if equal
    */
@@ -69,19 +70,25 @@ public abstract class Hand implements Comparable<Hand> {
 
   /**
    * Two hands are equal if their card lists are equal (same cards)
+   *
    * @param o the object to compare with
    * @return true if both are Hand instances with identical cards
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Hand hand = (Hand) o;
     return Objects.equals(getCards(), hand.getCards());
   }
 
   /**
    * Hash code based on the cards in the hand
+   *
    * @return hash code of the card list
    */
   @Override
@@ -89,9 +96,9 @@ public abstract class Hand implements Comparable<Hand> {
     return Objects.hashCode(getCards());
   }
 
-/**
- * Returns a simple string representation showing the cards
- */
+  /**
+   * Returns a simple string representation showing the cards
+   */
   @Override
   public String toString() {
     return "Hands:" + cards;

@@ -1,8 +1,8 @@
 package enumeration;
 
 /**
- * Defines exception messages for game operations
- * Each enum constant encapsulates a specific error description
+ * Defines exception messages for game operations Each enum constant encapsulates a specific error
+ * description
  */
 public enum ExceptionMessage {
   /**
@@ -33,13 +33,13 @@ public enum ExceptionMessage {
   /**
    * Thrown when a requested HandRank cannot be determined
    */
-  HAND_RANK_NOT_FOUND("Invalid Operation: HandRank Not Found")
-  ;
+  HAND_RANK_NOT_FOUND("Invalid Operation: HandRank Not Found");
 
   private final String message;
 
   /**
    * Constructs an ExceptionMessage enum constant
+   *
    * @param message the descriptive text for this error scenario
    */
   ExceptionMessage(String message) {

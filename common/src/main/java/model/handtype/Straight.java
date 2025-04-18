@@ -14,10 +14,9 @@ import utils.HandEvaluator;
  * Represents a Straight: three consecutive cards of mixed suits
  */
 public class Straight extends Hand {
-  protected List<Card> cards;
 
   public Straight(List<Card> cards) {
-    super(cards, HandRank.STRAIGHT);
+    super(cards);
   }
 
   /**
@@ -26,7 +25,7 @@ public class Straight extends Hand {
    */
   @Override
   public HandRank getHandName() {
-    return handRank;
+    return HandRank.STRAIGHT;
   }
 
   /**
@@ -35,7 +34,7 @@ public class Straight extends Hand {
    */
   @Override
   public int getHandValue() {
-    return handRank.getRankValue();
+    return HandRank.STRAIGHT.getRankValue();
   }
 
   /**
