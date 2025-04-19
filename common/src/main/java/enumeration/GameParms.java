@@ -2,7 +2,7 @@ package enumeration;
 
 public enum GameParms {
     MAX_CARD_NUMBER(5),
-    MAX_PLAYER_NUMBER(2);
+    MAX_PLAYER_NUMBER(3);
 
     private final int value;
 
