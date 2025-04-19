@@ -32,34 +32,50 @@ import utils.JsonUtil;
 
 /**
  * ClientController is responsible for handling message
- * passing from backend, and informing updating UI
+ * passing from backend, and informing updating UI.
+ * <p>
+ * This class manages the socket connection to the server,
+ * message sending and receiving threads, and processes
+ * game commands from the server to update the UI.
  */
 public class ClientController {
 
+    /** Logger for this class */
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
+    /** IP address of the server */
     private static final String SEVER_IP = "127.0.0.1"; // IP address listened by server
 
+    /** Port number of the server */
     private static final int SERVER_PORT = 10087;   // port listened by server
 
+    /** Socket connection to the server */
     private Socket socket;
 
-    private final String playerName;  // player name from login frame
+    /** Player name from login frame */
+    private final String playerName;
 
+    /** Message queue for sending messages to the server */
     private final ClientSendMQ clientSendMQ;
 
+    /** Message queue for receiving messages from the server */
     private final ClientReceiveMQ clientReceiveMQ;
 
+    /** Event listener for UI updates */
     private final EventListener eventListener;
 
+    /** Local player instance */
     private final Player localPlayer;
 
 
     /**
      * Constructor of ClientController
+     * <p>
+     * Initializes the client controller, establishes a connection to the server,
+     * starts the send and receive threads, and begins message handling.
      *
-     * @param playerName player name input in login frame
-     *                   received from login frame
+     * @param playerName     player name input in login frame
+     * @param eventListener  event listener for UI updates
      */
     public ClientController(String playerName, EventListener eventListener) {
         this.clientSendMQ = new ClientSendMQ();
@@ -80,8 +96,13 @@ public class ClientController {
     }
 
     /**
-     * Make connection with backend game server
-     * by socket with target IP and target port number
+     * Makes connection with backend game server
+     * by socket with target IP and target port number.
+     * <p>
+     * Creates a new socket connection to the server using the
+     * predefined IP address and port number.
+     *
+     * @throws RuntimeException if the socket connection cannot be established
      */
     private void createSocket() {
         try {
@@ -95,19 +116,24 @@ public class ClientController {
     }
 
     /**
-     * Create thread sending message to backend
-     * and start the thread
+     * Creates thread sending message to backend
+     * and starts the thread.
+     * <p>
+     * Initializes the client send thread with the socket connection
+     * and the send message queue, then starts the thread.
      */
     private void startClientSendThread() {
-
         ClientSendThread clientSendThread = new ClientSendThread(socket, clientSendMQ);
         clientSendThread.start();
         log.info("ClientSendThread Started Successfully");
     }
 
     /**
-     * Create thread receiving message to backend
-     * and start the thread
+     * Creates thread receiving message from backend
+     * and starts the thread.
+     * <p>
+     * Initializes the client receive thread with the socket connection
+     * and the receive message queue, then starts the thread.
      */
     private void startClientReceiveThread() {
         ClientReceiveThread clientReceiveThread = new ClientReceiveThread(socket, clientReceiveMQ);
@@ -116,7 +142,10 @@ public class ClientController {
     }
 
     /**
-     * Send player name taken from login frame to backend
+     * Sends player name taken from login frame to backend.
+     * <p>
+     * Builds a JOIN command with the player name and adds it to the
+     * send message queue to be sent to the server.
      */
     private void sendPlayerName() {
         // Encapsulate player name to JOIN command
@@ -128,8 +157,11 @@ public class ClientController {
     }
 
     /**
-     * Start new thread taking msg from MQ,
-     * and start handing message
+     * Starts new thread taking msg from MQ,
+     * and starts handling messages.
+     * <p>
+     * Creates and starts a new thread that continuously takes messages
+     * from the receive message queue and processes them.
      */
     private void startHandlingMsg() {
         // Starting Message thread and taking messages
@@ -148,10 +180,12 @@ public class ClientController {
 
 
     /**
-     * Handle message taken from messageBuffer
+     * Handles message taken from messageBuffer.
+     * <p>
+     * Parses the message to determine the command type and
+     * delegates to the appropriate handler method.
      *
-     * @param message message taken from messageBuffer
-     *                send from backend server
+     * @param message  message taken from messageBuffer sent from backend server
      */
     private void handleMessage(String message) {
         System.out.println("========== Client handleMessage info==========");
@@ -170,6 +204,14 @@ public class ClientController {
         }
     }
 
+    /**
+     * Handles RESULT command from the server.
+     * <p>
+     * Parses the JSON results containing player rankings and played cards,
+     * then updates the UI with this information.
+     *
+     * @param commandArgs  JSON string containing player ranking results
+     */
     private void handleResultCmd(String commandArgs) {
         System.out.println("----------- RESULT ----------");
         // RESULT [{
@@ -210,12 +252,12 @@ public class ClientController {
                 String handCardRank = handCard.getString("rank");
                 String handCardSuit = handCard.getString("suit");
                 parsedPlayedCards.add(
-                        new Card(CardSuit.valueOf(handCardSuit), CardRank.valueOf(handCardRank)));
+                    new Card(CardSuit.valueOf(handCardSuit), CardRank.valueOf(handCardRank)));
             }
 
             // Set attributes
             playerRankDTOS.add(new PlayerRankDTO(parsedRank, parsedPlayerId,
-                    parsedPlayerName, parsedPlayedCards));
+                parsedPlayerName, parsedPlayedCards));
         }
 
         // Notifying listener
@@ -225,16 +267,16 @@ public class ClientController {
             for (int i = 0; i < playerRankDTOS.size(); i++) {
                 PlayerRankDTO dto = playerRankDTOS.get(i);
                 String resString = dto.getPlayedCards().stream()
-                        .map(card -> card.getSuit() + "" + card.getRank())
-                        .collect(Collectors.joining(", "));
+                    .map(card -> card.getSuit() + "" + card.getRank())
+                    .collect(Collectors.joining(", "));
 
                 resultMessage.append("Rank ")
-                        .append(dto.getRank())
-                        .append(": Player ")
-                        .append(dto.getPlayerName())
-                        .append(" played: ")
-                        .append(resString)
-                        .append("\n");
+                    .append(dto.getRank())
+                    .append(": Player ")
+                    .append(dto.getPlayerName())
+                    .append(" played: ")
+                    .append(resString)
+                    .append("\n");
             }
             eventListener.onPlayerResultUpdated(resultMessage.toString());
             eventListener.onTextAreaUpdated(resultMessage.toString());
@@ -242,16 +284,19 @@ public class ClientController {
     }
 
     /**
-     * Function to handle WELCOME command
+     * Handles WELCOME command from the server.
+     * <p>
+     * Parses the welcome command to extract player information and
+     * updates the UI with welcome message.
      *
-     * @param commandParts command parts split
+     * @param commandParts  array of command parts split from the original message
      */
     private void handleWelcomeCmd(String[] commandParts){
         // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
         System.out.println("----------- WELCOME COMMAND -----------");
         if (eventListener != null) {
             String welcomeString = String.format(
-                    "%s Welcome! Online player number: %s.", commandParts[1], commandParts[3]
+                "%s Welcome! Online player number: %s.", commandParts[1], commandParts[3]
             );
 
             // Getting socket send by server
@@ -269,9 +314,12 @@ public class ClientController {
     }
 
     /**
-     * Function to START command
+     * Handles START command from the server.
+     * <p>
+     * Parses the player hand information from the JSON arguments and
+     * updates the UI with the cards and game start information.
      *
-     * @param commandArgs
+     * @param commandArgs  JSON string containing player hand information
      */
     private void handleStartCmd(String commandArgs){
         System.out.println("----------- START COMMAND -----------");
@@ -285,8 +333,8 @@ public class ClientController {
                 List<Card> playerHand = playerDTO.getPlayerHand();
                 // Encapsulate cardVO list
                 List<CardVO> cardVOs = playerHand.stream()
-                        .map(card -> new CardVO(card.getSuit(), card.getRank(), true))
-                        .collect(Collectors.toList());
+                    .map(card -> new CardVO(card.getSuit(), card.getRank(), true))
+                    .collect(Collectors.toList());
                 log.info("Mapped to CardVO list: {}", cardVOs);
 
                 eventListener.onCardAreaUpdated(cardVOs);
@@ -301,21 +349,27 @@ public class ClientController {
     }
 
     /**
-     * Sends the selected cards info to the server
+     * Sends the selected cards information to the server.
+     * <p>
+     * Converts the selected CardVO objects to DTO objects,
+     * creates a JSON string, builds a PLAY command, and sends it to the server.
+     * Also updates the UI with a message.
+     *
+     * @param selectedCardVOList  list of selected CardVO objects
      */
     public void sendSelectedCardsToServer(List<CardVO> selectedCardVOList) {
         // Convert selected CardVO to Card list
         List<selectedCardDTO> playCardDTOs = selectedCardVOList.stream()
-                .map(cardVO -> new selectedCardDTO(localPlayer.getId(),cardVO.getSuit(),cardVO.getRank()))
-                .toList();
+            .map(cardVO -> new selectedCardDTO(localPlayer.getId(),cardVO.getSuit(),cardVO.getRank()))
+            .toList();
 
         // Create a JSON string from the selected cards
         String selectedCardsJson = JsonUtil.toJson(playCardDTOs);
 
         // Build CLIENT_PLAY command
         String playCommand = CommandBuilder.buildCommand(
-                CommandType.CLIENT_PLAY,
-                selectedCardsJson
+            CommandType.CLIENT_PLAY,
+            selectedCardsJson
         );
 
         // Send the command to the server via the client controller
@@ -326,16 +380,24 @@ public class ClientController {
     }
 
     /**
-     * Sends the play command with the selected cards to the server
+     * Sends the play command with the selected cards to the server.
+     * <p>
+     * Adds the play command to the send message queue.
      *
-     * @param playCommand the formatted play command with selected cards
+     * @param playCommand  the formatted play command with selected cards
      */
     public void sendPlayCommand(String playCommand) {
         this.clientSendMQ.addMessage(playCommand);
         log.info("PlayCommand ==> clientSendMQ: {}", playCommand);
     }
 
+    /**
+     * Allows the player to select cards.
+     * <p>
+     * This method is currently empty and might be implemented
+     * in the future to provide additional functionality.
+     */
     public void playerSelectCards() {
-
+        // Method is currently empty, to be implemented later
     }
 }
