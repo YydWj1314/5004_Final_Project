@@ -7,7 +7,10 @@ import utils.ServerSendMQ;
 import utils.SocketHandler;
 
 import java.net.Socket;
-
+/**
+ * Thread for sending messages to clients.
+ * Takes messages from the queue and sends them to the appropriate client.
+ */
 public class ServerSendThread extends Thread {
     private static final Logger log = LoggerFactory.getLogger(ServerSendThread.class);
 
@@ -17,9 +20,9 @@ public class ServerSendThread extends Thread {
 
 
     /**
-     * Constructor of thread
+     * Creates a new thread for sending messages to clients.
      *
-     * @param serverSendMQ
+     * @param serverSendMQ The message queue containing messages to be sent
      */
     public ServerSendThread(ServerSendMQ serverSendMQ) {
         this.serverSendMQ = serverSendMQ;

@@ -25,7 +25,10 @@ import thread.ServerReceiveThread;
 import thread.ServerSendThread;
 import utils.*;
 
-
+/**
+ * Controls the game logic and handles communication between clients and server.
+ * Manages player connections, card dealing, and game flow.
+ */
 public class GameController {
     private static final Logger log = LoggerFactory.getLogger(GameController.class);
     private ServerReceiveMQ serverReceiveMQ;
@@ -47,7 +50,8 @@ public class GameController {
     private int RANK_COUNTER = 0;
 
     /**
-     *
+     * Creates a new GameController.
+     * Initializes player list, message queues, and deck.
      */
     public GameController() {
         this.playerList = Collections.synchronizedList(new ArrayList<>());
@@ -59,7 +63,10 @@ public class GameController {
     }
 
     /**
-     * @param socket
+     * Sets up communication with a new client connection.
+     * Starts the send and receive threads for handling messages.
+     *
+     * @param socket The socket for the new client connection
      */
     public void handleNewConnection(Socket socket) {
         this.socket = socket;
@@ -72,7 +79,7 @@ public class GameController {
     }
 
     /**
-     *
+     * Creates and starts a new thread for sending messages to clients.
      */
     private void startServerSendThread() {
         // Start ServerSendThread
@@ -82,8 +89,7 @@ public class GameController {
     }
 
     /**
-     * Create thread receiving message to backend
-     * and start the thread
+     * Creates and starts a new thread for receiving messages from clients.
      */
     private void startServerReceiveThread() {
         ServerReceiveThread serverReceiveThread = new ServerReceiveThread(socket, serverReceiveMQ);
@@ -93,8 +99,8 @@ public class GameController {
 
 
     /**
-     * Create new thread handing message receiving from backend
-     * and start the thread
+     * Creates and starts a new thread that listens for incoming messages.
+     * Handles messages as they arrive in the queue.
      */
     private void startHandlingMsg() {
         new Thread(() -> {
@@ -111,21 +117,21 @@ public class GameController {
     }
 
     /**
-     * @param message
-     * @param socket
+     * Processes incoming messages based on command type.
+     * Routes to specific handler methods for each command.
+     *
+     * @param message The message received from the client
+     * @param socket The socket from which the message was received
      */
     private void handleMessage(String message, Socket socket) {
         System.out.println("========= Server HandleMessage Info ========");
 
         // Split JOIN command to commandType and commandParams
-        // eg: JOIN yyd --> commandType: JOIN,
-        //                  commandParams: yyd
         String[] parts = message.split(" ");
         String commandType = parts[0];
         String commandArgs = message.substring(commandType.length()).trim();
 
         // Handle message according to command type defined in CommandType enum class
-        // command type eg: JOIN, PLAY ...
         switch (commandType) {
             // handle join cmd
             case "JOIN" -> handleJoinCmd(parts);
@@ -138,7 +144,11 @@ public class GameController {
 
 
     /**
-     * @param parts
+     * Handles a player joining the game.
+     * Creates a new player, adds to the player list, and broadcasts welcome message.
+     * Starts the game if the maximum number of players is reached.
+     *
+     * @param parts The JOIN command split into parts
      */
     private void handleJoinCmd(String[] parts) {
         System.out.println("----------- JOIN COMMAND -----------");
@@ -146,8 +156,7 @@ public class GameController {
         Player newPlayer = new Player(parts[1], socket);
         this.playerList.add(newPlayer);
 
-        // Build "WELCOME" command
-        // eg:   WELCOME (name)daniel (id)1 (socket)127.0.0.1 (player number)1
+        // "WELCOME" command
         String welcomeCmd = CommandBuilder.buildCommand(
                 CommandType.SERVER_WELCOME,           // parts[0]
                 newPlayer.getName(),                  // parts[1]
@@ -167,11 +176,8 @@ public class GameController {
             for (Player player : playerList) {
                 // Deal cards
                 List<Card> cardsDeal = deck.deal(MAX_CARDS_NUMBER);
-                // Sort hand in descending order
                 HandEvaluator.sortHandByValue(cardsDeal);
-                // Set hand of player
                 player.setHand(cardsDeal);
-                // Encapsulate DTO
                 PlayerDTO playerDTO = new PlayerDTO(player.getId(), player.getName(), player.getHand());
                 // Converting PlayerDTO to json string
                 String playerDtoJson = JsonUtil.toJson(playerDTO);
@@ -187,25 +193,17 @@ public class GameController {
 
 
     /**
-     * Handles a client play command, eg:
-     * PLAY_RESULT { "playerHand":[{"rank":"EIGHT","suit":"SPADES"},
-     *                             {"rank":"THREE","suit":"SPADES"},
-     *                             {"rank":"KING","suit":"DIAMONDS"},
-     *                             {"rank":"NINE","suit":"SPADES"},
-     *                             {"rank":"TEN","suit":"CLUBS"}],
-     *               "playerId":1,
-     *               "playerName":"yyd"
-     *              }
-     * @param commandArgs The command arguments containing the card data
+     * Handles a player's card play.
+     * Updates player's selected cards and calculates rankings when all players have played.
+     * Broadcasts results to all players.
+     *
+     * @param commandArgs The JSON string containing the played cards information
      */
     private void handlePlayCmd(String commandArgs) {
 
         System.out.println("----------- PLAY COMMAND -----------");
         try {
-            // Parse the selected cards from JSON, eg:
-            //     [{"rank":"QUEEN","suit":"SPADES","playerId":1},
-            //      {"rank":"QUEEN","suit":"DIAMONDS","playerId":1},
-            //      {"rank":"ACE","suit":"DIAMONDS","playerId":1}]
+            // Parse the selected cards from JSON
             JSONArray playedCardsJsonArray = JsonUtil.toArray(commandArgs);
 
             // Parse Json string and set player object's SelectedCards attribute

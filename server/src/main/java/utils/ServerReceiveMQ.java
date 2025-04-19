@@ -5,7 +5,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * Message queue for storing incoming messages from clients.
+ * Provides thread-safe access to messages.
+ */
 public class ServerReceiveMQ {
     private static final Logger log = LoggerFactory.getLogger(ServerReceiveMQ.class);
 

@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Handles broadcasting messages to multiple clients at once.
+ */
 public class MessageBroadcaster {
   private static final Logger log = LoggerFactory.getLogger(MessageBroadcaster.class);
   private ServerSendMQ serverSendMQ;

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import thread.ServerReceiveThread;
 
 /**
- * A simple game server that listens for client connections.
- * This server runs on localhost and waits for clients to connect.
+ * Main server class that listens for client connections.
+ * Creates a new socket and game controller for each client.
  */
 public class GameServer {
 
@@ -34,8 +34,8 @@ public class GameServer {
     private GameController gameController;
 
     /**
-     * Creates a new game server that listens for client connections.
-     * The server will keep running until it's manually stopped.
+     * Creates a new game server and starts listening for connections.
+     * Handles new clients by creating game controllers for them.
      */
     public GameServer() {
         // Create ServerSocket

@@ -6,7 +6,10 @@ import utils.ServerReceiveMQ;
 import utils.SocketHandler;
 
 import java.net.Socket;
-
+/**
+ * Thread for receiving messages from a client.
+ * Listens for incoming messages and adds them to the message queue.
+ */
 public class ServerReceiveThread extends Thread{
     private static final Logger log = LoggerFactory.getLogger(ServerReceiveThread.class);
     private Socket socket;
@@ -14,10 +17,10 @@ public class ServerReceiveThread extends Thread{
     private ServerReceiveMQ serverReceiveMQ;
 
     /**
-     * Constructor
+     * Creates a new thread for receiving messages from a client.
      *
-     * @param socket
-     * @param serverReceiveMQ
+     * @param socket The socket connected to the client
+     * @param serverReceiveMQ The message queue for storing received messages
      */
     public ServerReceiveThread(Socket socket, ServerReceiveMQ serverReceiveMQ) {
         this.socket = socket;
@@ -26,7 +29,8 @@ public class ServerReceiveThread extends Thread{
     }
 
     /**
-     *
+     * Main execution method of the thread.
+     * Continuously listens for messages from the client and adds them to the queue.
      */
     @Override
     public void run(){

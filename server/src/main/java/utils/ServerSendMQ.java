@@ -7,6 +7,10 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+/**
+ * Message queue for storing outgoing messages to clients.
+ * Provides thread-safe access to messages.
+ */
 public class ServerSendMQ {
     private static final Logger log = LoggerFactory.getLogger(ServerSendMQ.class);
 
