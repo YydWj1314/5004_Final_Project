@@ -5,8 +5,8 @@ import enumeration.HandRank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import model.Card;
-import model.Hand;
+import model.JavaBean.Card;
+import model.JavaBean.Hand;
 import model.exception.CardNotFoundException;
 import utils.HandEvaluator;
 

@@ -2,31 +2,30 @@ package enumeration;
 
 public enum CommandType {
     // Message Casting Type:
-    UNICAST("UNIT"),
-    BROADCAST("BROAD"),
+    SERVER_UNICAST("UNIT"),
+    SERVER_BROADCAST("BROAD"),
 
     // Server command:
-    JOIN("JOIN"),
-    START("START"),
-    PLAY_RESULT("PLAY_RESULT"),
+    SERVER_START("START"),
+    SERVER_RESULT("RESULT"),
+    SERVER_WELCOME("WELCOME"),
 
     // Client command:
-    WELCOME("WELCOME"),
-    CLIENT_PLAY("CLIENT_PLAY");
+    CLIENT_PLAY("PLAY"),
+    CLIENT_JOIN("JOIN");
 
-
-    private final String type;
+    private final String message;
 
     CommandType(String message) {
-        this.type = message;
+        this.message = message;
     }
 
     public String getMessage() {
-        return type;
+        return message;
     }
 
     @Override
     public String toString() {
-        return type;
+        return message;
     }
 }

@@ -1,4 +1,4 @@
-package model;
+package model.JavaBean;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -12,33 +12,39 @@ public class Player {
   private int playerId; //unique identifier for the player
   private String playerName;
   private List<Card> playerHand; //cards currently held by the player
-  private String handRank; // evaluated rank of the player's hand
   private static int IDCOUNTER = 0;
   private Socket socket;
   private SocketHandler socketHandler;
+  private List<Card> selectedCards;
+  private int rank = -1;
 
   /**
-   * Constructs a new model.Player with the specified username.
-   * Each player is assigned a unique player ID.
+   * Constructor for frontend
+   * Need to be set
    *
    * @param playerName the username of the player
    */
   public Player(String playerName) {
-    // Ensure each player is created with a unique playerId incremented by 1
-    this.playerId = IDCOUNTER++;
     this.playerName = playerName;
     this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
-    this.handRank = null;
   }
 
+
+  /**
+   * Player Constructor for Backend
+   * Each player is assigned a unique player ID
+   *
+   * @param playerName the username of the player
+   * @param socket socket to connect with frontend
+   */
   public Player(String playerName, Socket socket) {
     // Ensure each player is created with a unique playerId incremented by 1
     this.playerId = IDCOUNTER++;
     this.playerName = playerName;
-    this.playerHand = new ArrayList<Card>(); //sets up empty lists for player's hand
-    this.handRank = null;
+    this.playerHand = new ArrayList<>(); //sets up empty lists for player's hand
     this.socket = socket;
     this.socketHandler = new SocketHandler(socket);
+    this.selectedCards = new ArrayList<>();
   }
 
   /**
@@ -93,49 +99,42 @@ public class Player {
   }
 
   /**
-   * @return the hand rank of the player
+   * @return cards selected and played by player
    */
-  public String getHandRank() {
-    return handRank;
+  public List<Card> getSelectedCards() {
+    return selectedCards;
   }
 
   /**
-   * Sets the hand rank of the player to the specified value.
+   * Cards selected and played by player
    *
-   * @param handRank the hand rank to set
+   * @param selectedCards
    */
-  public void setHandRank(String handRank) {
-    this.handRank = handRank;
+  public void setSelectedCards(List<Card> selectedCards) {
+    this.selectedCards = selectedCards;
   }
 
   /**
-   * Displays the player's hand to the console.
+   * @return rank of the player
    */
-  public void displayHand() {
-    System.out.println(playerId + " hand: " + playerHand);
+  public int getRank() {
+    return rank;
   }
 
   /**
-   * Returns a string representation of the player, including player ID, username, hand, and hand rank.
-   *
-   * @return a string representation of the player
+   * @param rank rank of the player
    */
+  public void setRank(int rank) {
+    this.rank = rank;
+  }
+
   @Override
   public String toString() {
-    return "model.Player{" +
-        "playerId=" + playerId +
-        ", playerName='" + playerName + '\'' +
-        ", playerHand=" + playerHand +
-        ", handRank='" + handRank + '\'' +
-        '}';
+    return "Player{" +
+            "playerId=" + playerId +
+            ", playerName='" + playerName + '\'' +
+            ", playerHand=" + playerHand +
+            ", selectedCards=" + selectedCards +
+            '}';
   }
-
-  /**
-   * @param message
-   */
-  public void sendMessage(String message) {
-    socketHandler.sendMessage(message);
-  }
-
-
 }

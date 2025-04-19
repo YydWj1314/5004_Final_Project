@@ -1,11 +1,8 @@
-package model;
+package model.JavaBean;
 
 import enumeration.CardRank;
 import enumeration.CardSuit;
 
-import java.util.Comparator;
-import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 
 public class Card {

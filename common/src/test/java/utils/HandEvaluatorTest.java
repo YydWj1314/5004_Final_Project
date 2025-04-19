@@ -3,7 +3,7 @@ package utils;
 import enumeration.CardRank;
 import enumeration.CardSuit;
 import enumeration.HandRank;
-import model.Card;
+import model.JavaBean.Card;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

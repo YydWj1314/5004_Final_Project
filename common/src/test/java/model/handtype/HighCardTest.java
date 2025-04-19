@@ -3,15 +3,13 @@ package model.handtype;
 import enumeration.CardRank;
 import enumeration.CardSuit;
 import enumeration.HandRank;
-import model.Card;
+import model.JavaBean.Card;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HighCardTest {
 

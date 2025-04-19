@@ -1,8 +1,10 @@
 package controller;
 
-import model.CardVO;
+import model.DTO.PlayerRankDTO;
+import model.VO.CardVO;
 import view.MainFrame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ControllerEventListener implements EventListener {
@@ -26,5 +28,12 @@ public class ControllerEventListener implements EventListener {
     public void onCardAreaUpdated(List<CardVO> CardVOList, Object... args) {
         mainFrame.updateCardArea(CardVOList);
     }
+
+    @Override
+    public void onPlayerResultUpdated(String message, Object... args) {
+        mainFrame.showGameResult(this.mainFrame, message);
+    }
+
+
 
 }

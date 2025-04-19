@@ -3,29 +3,21 @@ package view;
 import controller.ClientController;
 
 import controller.ControllerEventListener;
-import controller.EventListener;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.*;
 
-import model.Card;
-import model.CardVO;
-import model.PlayerDTO;
+import model.DTO.PlayerRankDTO;
+import model.VO.CardVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import thread.ClientReceiveThread;
-import thread.ClientSendThread;
 
-import enumeration.CommandType;
-import utils.CommandBuilder;
-import utils.JsonUtil;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.stream.Collectors;
 
 /**
  * The {@code MainFrame} class represents the main game window.
@@ -46,15 +38,14 @@ public class MainFrame extends JFrame {
 
     private List<CardVO> cardVOList = new ArrayList<>();
 
-  private List<CardVO> selectedCardVOList = new ArrayList<>();
-//  private model.Player currentPlayer = new model.Player();
+    private List<CardVO> selectedCardVOList = new ArrayList<>();
+//  private model.JavaBean.Player currentPlayer = new model.JavaBean.Player();
 
 
     /**
      * Constructs the {@code MainFrame} and initializes UI components.
      */
     public MainFrame(String message) throws IOException {
-
         this.message = message;
 
         // Initialize ClientController
@@ -67,12 +58,11 @@ public class MainFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
 
-        // add CardPanel
+        // Adding CardPanel
         cardPanel = new CardPanel();
         cardPanel.setBounds(0, 0, 1200, 700);
         cardPanel.setLayout(null);
         this.add(cardPanel);
-
 
         // Adding System message area
         systemMessageArea = new JTextArea();
@@ -87,27 +77,37 @@ public class MainFrame extends JFrame {
         Font font = new Font("Arial", Font.PLAIN, 15);
         systemMessageArea.setFont(font);
 
-
         // Initializing `playButton`
         playButton = new JButton("Play");
         playButton.setBounds(200, 400, 100, 50);
         cardPanel.add(playButton);
 
+        // Adding click event to the Play button
         playButton.addActionListener(e -> handlePlayButtonClick());
 
+        // Setting visible
         this.setVisible(true);
+
         log.info("MainFrame displayed successfully");
     }
 
+    /**
+     * @param message
+     * @param args
+     */
     // TODO update
-    public void updateTextField(String message, Object... args){
-        log.info("Updating Text Area..." );
+    public void updateTextField(String message, Object... args) {
+        log.info("Updating Text Area...");
         SwingUtilities.invokeLater(() -> systemMessageArea.append(message + "\n"));
 
     }
 
+    /**
+     * @param cardVOList
+     * @param args
+     */
     // TODO update
-    public void updateCardArea(List<CardVO> cardVOList, Object... args){
+    public void updateCardArea(List<CardVO> cardVOList, Object... args) {
         log.info("Updating Card Area...");
         SwingUtilities.invokeLater(() -> {
             this.cardPanel.revalidate();
@@ -149,7 +149,7 @@ public class MainFrame extends JFrame {
      * Handles the play button click event
      */
     private void handlePlayButtonClick() {
-        log.info("Play button clicked");
+        log.info("Play button clicked...");
 
         // Check if exactly 3 cards are selected
         if (selectedCardVOList.size() != 3) {
@@ -161,7 +161,7 @@ public class MainFrame extends JFrame {
         displaySelectedCardsInMiddle();
 
         // Send the selected cards to the server
-        sendSelectedCardsToServer();
+        clientController.sendSelectedCardsToServer(selectedCardVOList);
     }
 
     /**
@@ -191,36 +191,29 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Sends the selected cards to the server
+     * Show game result
+     *
      */
-    private void sendSelectedCardsToServer() {
-        // Convert selected CardVO to Card list
-        List<Card> selectedCards = selectedCardVOList.stream()
-            .map(cardVO -> new Card(cardVO.getSuit(), cardVO.getRank()))
-            .collect(Collectors.toList());
-
-        // Create a JSON string from the selected cards
-        String selectedCardsJson = JsonUtil.toJson(selectedCards);
-
-        // Build CLIENT_PLAY command
-        String playCommand = CommandBuilder.buildCommand(
-            CommandType.CLIENT_PLAY,
-            selectedCardsJson
-        );
-
-        // Send the command to the server via the client controller
-        clientController.sendPlayCommand(playCommand);
-
-        // Update UI with message
-        updateTextField("You played your selected cards!");
+    public void showGameResult(JFrame mainFrame, String resultMessage) {
+        JOptionPane.showMessageDialog(mainFrame, resultMessage,
+                "Game Result", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public class CardClickListener extends MouseAdapter {
+
+    /**
+     *
+     */
+    private class CardClickListener extends MouseAdapter {
         private final CardVO cardVO;
         private final int originalX;
         private final int originalY;
         private static final int MOVE_UP_PIXELS = 20;
 
+        /**
+         * @param cardVO
+         * @param originalX
+         * @param originalY
+         */
         public CardClickListener(CardVO cardVO, int originalX, int originalY) {
             this.cardVO = cardVO;
             this.originalX = originalX;
@@ -235,7 +228,6 @@ public class MainFrame extends JFrame {
                 // Already have 3 cards selected, do nothing
                 return;
             }
-
             // Toggle selection status
             cardVO.setSelected(!cardVO.isSelected());
 

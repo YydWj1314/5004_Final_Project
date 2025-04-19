@@ -1,4 +1,6 @@
-package model;
+package model.DTO;
+
+import model.JavaBean.Card;
 
 import java.util.List;
 

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Card;
-import model.Hand;
+import model.JavaBean.Card;
+import model.JavaBean.Hand;
 
 /**
  * Represents a Pair: exactly two cards of the same rank The strength of the hand is determined by

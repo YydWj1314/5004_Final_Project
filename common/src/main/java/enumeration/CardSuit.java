@@ -46,5 +46,17 @@ public enum CardSuit {
     return symbol;
   }
 
+  /**
+   * @param name
+   * @return
+   */
+  public static CardSuit fromName(String name){
+    for(CardSuit suit: values()){
+      if(suit.getName().equals(name)){
+        return suit;
+      }
+    }
+    throw new IllegalArgumentException("No suit find with name:" + name);
+  }
 
 }

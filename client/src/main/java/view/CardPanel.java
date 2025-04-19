@@ -1,7 +1,7 @@
 package view;
 
 import java.net.URL;
-import model.Card;
+import model.JavaBean.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,8 +1,7 @@
-package model;
+package model.JavaBean;
 
 import enumeration.HandRank;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Objects;
 

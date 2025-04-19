@@ -1,6 +1,6 @@
 package utils;
 
-import model.Player;
+import model.JavaBean.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

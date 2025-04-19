@@ -3,20 +3,21 @@ package utils;
 import enumeration.CardRank;
 import enumeration.ExceptionMessage;
 import enumeration.HandRank;
-import java.util.Comparator;
-import java.util.List;
-import model.Card;
-import model.Hand;
+import model.JavaBean.Card;
+import model.JavaBean.Hand;
 import model.exception.CardNotFoundException;
 import model.exception.HandRankNotFoundException;
 import model.handtype.Pair;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Comparator for two player with 3‑card hands represented as List<Card>
  * First orders by HandRank, then tiebreaks within equal rank
  */
 
-public class RankComparator implements Comparator<List<Card>> {
+public class HandComparator implements Comparator<List<Card>> {
   @Override
   public int compare(List<Card> o1, List<Card> o2) {
     Hand hand1 = HandEvaluator.getResult(o1);

@@ -1,11 +1,18 @@
 package controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import enumeration.CardRank;
+import enumeration.CardSuit;
 import enumeration.CommandType;
 
-import model.Card;
-import model.CardVO;
-import model.Player;
-import model.PlayerDTO;
+import enumeration.GameParms;
+import model.DTO.PlayerDTO;
+import model.DTO.PlayerRankDTO;
+import model.DTO.selectedCardDTO;
+import model.JavaBean.Card;
+import model.JavaBean.Player;
+import model.VO.CardVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thread.ClientReceiveThread;
@@ -87,7 +94,6 @@ public class ClientController {
         log.info("Try to connect server: IP: {}, Port: {}", SEVER_IP, SERVER_PORT);
     }
 
-
     /**
      * Create thread sending message to backend
      * and start the thread
@@ -110,6 +116,18 @@ public class ClientController {
     }
 
     /**
+     * Send player name taken from login frame to backend
+     */
+    private void sendPlayerName() {
+        // Encapsulate player name to JOIN command
+        // eg: JOIN yyd
+        String joinCommand = CommandBuilder.buildCommand(CommandType.CLIENT_JOIN, playerName);
+        // Add command to sendMQ
+        this.clientSendMQ.addMessage(joinCommand);
+        log.info("JoinCommand ==> clientSendMQ: {}", joinCommand);
+    }
+
+    /**
      * Start new thread taking msg from MQ,
      * and start handing message
      */
@@ -128,27 +146,6 @@ public class ClientController {
         }).start();
     }
 
-    /**
-     * Send player name taken from login frame to backend
-     */
-    private void sendPlayerName() {
-        // Encapsulate player name to JOIN command
-        // eg: JOIN yyd
-        String joinCommand = CommandBuilder.buildCommand(CommandType.JOIN, playerName);
-        // Add command to sendMQ
-        this.clientSendMQ.addMessage(joinCommand);
-        log.info("JoinCommand ==> clientSendMQ: {}", joinCommand);
-    }
-
-    /**
-     * Sends the play command with the selected cards to the server
-     *
-     * @param playCommand the formatted play command with selected cards
-     */
-    public void sendPlayCommand(String playCommand) {
-        this.clientSendMQ.addMessage(playCommand);
-        log.info("PlayCommand ==> clientSendMQ: {}", playCommand);
-    }
 
     /**
      * Handle message taken from messageBuffer
@@ -168,7 +165,79 @@ public class ClientController {
 
             case "START" -> handleStartCmd(commandArgs);
 
-            // TODO : adding cmd here
+            case "RESULT" -> handleResultCmd(commandArgs);
+
+        }
+    }
+
+    private void handleResultCmd(String commandArgs) {
+        System.out.println("----------- RESULT ----------");
+        // RESULT [{
+        //          "playedCards":[{"rank":"ACE","suit":"SPADES"},
+        //                         {"rank":"TEN","suit":"DIAMONDS"},
+        //                         {"rank":"TEN","suit":"HEARTS"}],
+        //          "playerId":1,
+        //          "playerName":"123",
+        //          "rank":1 },
+        //         {
+        //              "playedCards":[{"rank":"JACK","suit":"SPADES"},
+        //                              {"rank":"TEN","suit":"CLUBS"},
+        //                              {"rank":"EIGHT","suit":"SPADES"}],
+        //              "playerId":2,
+        //              "playerName":"456",
+        //              "rank":2
+        //          }
+        //        ]
+        // Parsing json strings to array
+        System.out.println(commandArgs);
+
+        // Parsing json strings to array
+        ArrayList<PlayerRankDTO> playerRankDTOS = new ArrayList<>();
+        JSONArray playerJsonArray = JsonUtil.toArray(commandArgs);
+        for (int i = 0; i < playerJsonArray.size(); i++) {
+            JSONObject playerJson = (JSONObject) playerJsonArray.get(i);
+            // Parse player id
+            int parsedPlayerId = playerJson.getInteger("playerId");
+            // Parse player name
+            String parsedPlayerName = playerJson.getString("playerName");
+            // Parse rank
+            int parsedRank = playerJson.getInteger("rank");
+            // Parse played card list
+            List<Card> parsedPlayedCards = new ArrayList<>();
+            JSONArray playedCardsJsonArray = playerJson.getJSONArray("playedCards");
+            for (int j = 0; j < playedCardsJsonArray.size(); j++) {
+                JSONObject handCard = (JSONObject) playedCardsJsonArray.get(j);
+                String handCardRank = handCard.getString("rank");
+                String handCardSuit = handCard.getString("suit");
+                parsedPlayedCards.add(
+                        new Card(CardSuit.valueOf(handCardSuit), CardRank.valueOf(handCardRank)));
+            }
+
+            // Set attributes
+            playerRankDTOS.add(new PlayerRankDTO(parsedRank, parsedPlayerId,
+                    parsedPlayerName, parsedPlayedCards));
+        }
+
+        // Notifying listener
+        if(eventListener != null && playerRankDTOS.size() >= GameParms.MAX_PLAYER_NUMBER.getValue()){
+            StringBuilder resultMessage = new StringBuilder("\n******** Game Result: *******\n");
+
+            for (int i = 0; i < playerRankDTOS.size(); i++) {
+                PlayerRankDTO dto = playerRankDTOS.get(i);
+                String resString = dto.getPlayedCards().stream()
+                        .map(card -> card.getSuit() + "" + card.getRank())
+                        .collect(Collectors.joining(", "));
+
+                resultMessage.append("Rank ")
+                        .append(dto.getRank())
+                        .append(": Player ")
+                        .append(dto.getPlayerName())
+                        .append(" played: ")
+                        .append(resString)
+                        .append("\n");
+            }
+            eventListener.onPlayerResultUpdated(resultMessage.toString());
+            eventListener.onTextAreaUpdated(resultMessage.toString());
         }
     }
 
@@ -179,7 +248,7 @@ public class ClientController {
      */
     private void handleWelcomeCmd(String[] commandParts){
         // eg: WELCOME (name)daniel (id)1 (player number)1 (socket)127.0.0.1
-        System.out.println("----- WELCOME COMMAND-----");
+        System.out.println("----------- WELCOME COMMAND -----------");
         if (eventListener != null) {
             String welcomeString = String.format(
                     "%s Welcome! Online player number: %s.", commandParts[1], commandParts[3]
@@ -205,16 +274,14 @@ public class ClientController {
      * @param commandArgs
      */
     private void handleStartCmd(String commandArgs){
-        System.out.println("----- START COMMAND-----");
+        System.out.println("----------- START COMMAND -----------");
         if (eventListener != null) {
             // Update system message area with the game start information
             eventListener.onTextAreaUpdated("All players joined. Game is starting...");
 
             try {
                 PlayerDTO playerDTO = JsonUtil.parseJson(commandArgs, PlayerDTO.class);
-                System.out.println(playerDTO);
 
-                // TODO implementing this
                 List<Card> playerHand = playerDTO.getPlayerHand();
                 // Encapsulate cardVO list
                 List<CardVO> cardVOs = playerHand.stream()
@@ -228,7 +295,47 @@ public class ClientController {
             }
 
             // Optional: Send a special message or mark the end of message update (if necessary)
-            eventListener.onTextAreaUpdated("******** Game Start, Good Luck ********");
+            eventListener.onTextAreaUpdated("******** Game Start, Good Luck! ********");
+            eventListener.onTextAreaUpdated("^_^ Please select cards to play ^_^");
         }
+    }
+
+    /**
+     * Sends the selected cards info to the server
+     */
+    public void sendSelectedCardsToServer(List<CardVO> selectedCardVOList) {
+        // Convert selected CardVO to Card list
+        List<selectedCardDTO> playCardDTOs = selectedCardVOList.stream()
+                .map(cardVO -> new selectedCardDTO(localPlayer.getId(),cardVO.getSuit(),cardVO.getRank()))
+                .toList();
+
+        // Create a JSON string from the selected cards
+        String selectedCardsJson = JsonUtil.toJson(playCardDTOs);
+
+        // Build CLIENT_PLAY command
+        String playCommand = CommandBuilder.buildCommand(
+                CommandType.CLIENT_PLAY,
+                selectedCardsJson
+        );
+
+        // Send the command to the server via the client controller
+        sendPlayCommand(playCommand);
+
+        // Update UI with message
+        eventListener.onTextAreaUpdated("You played your selected cards!");
+    }
+
+    /**
+     * Sends the play command with the selected cards to the server
+     *
+     * @param playCommand the formatted play command with selected cards
+     */
+    public void sendPlayCommand(String playCommand) {
+        this.clientSendMQ.addMessage(playCommand);
+        log.info("PlayCommand ==> clientSendMQ: {}", playCommand);
+    }
+
+    public void playerSelectCards() {
+
     }
 }

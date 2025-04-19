@@ -4,8 +4,8 @@ import enumeration.CardSuit;
 import enumeration.HandRank;
 import java.util.ArrayList;
 import java.util.List;
-import model.Card;
-import model.Hand;
+import model.JavaBean.Card;
+import model.JavaBean.Hand;
 
 /**
  * Represents a Flush: three cards of the same suit, not consecutive

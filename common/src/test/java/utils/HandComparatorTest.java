@@ -2,7 +2,7 @@ package utils;
 
 import enumeration.CardRank;
 import enumeration.CardSuit;
-import model.Card;
+import model.JavaBean.Card;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
@@ -11,16 +11,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class RankComparatorTest {
+class HandComparatorTest {
 
-  private RankComparator rankComparator;
+  private HandComparator handComparator;
 
   /**
    * Initialize a fresh comparator before each test
    */
   @BeforeEach
   void setUp() {
-    rankComparator = new RankComparator();
+    handComparator = new HandComparator();
   }
 
   /**
@@ -39,7 +39,7 @@ class RankComparatorTest {
         new Card(CardSuit.SPADES, CardRank.NINE),
         new Card(CardSuit.DIAMONDS, CardRank.THREE)
     );
-    int result = rankComparator.compare(straightFlushCards, highCardCards);
+    int result = handComparator.compare(straightFlushCards, highCardCards);
     assertTrue(result < 0, "Straight flush should outrank high card → negative result");
   }
 
@@ -59,7 +59,7 @@ class RankComparatorTest {
         new Card(CardSuit.DIAMONDS, CardRank.QUEEN),
         new Card(CardSuit.CLUBS, CardRank.EIGHT)
     );
-    int result = rankComparator.compare(pairJacks, pairQueens);
+    int result = handComparator.compare(pairJacks, pairQueens);
     assertTrue(result > 0, "Pair of Queens should outrank pair of Jacks → positive result");
   }
 
@@ -78,7 +78,7 @@ class RankComparatorTest {
         new Card(CardSuit.DIAMONDS, CardRank.QUEEN),
         new Card(CardSuit.CLUBS, CardRank.NINE)
     );
-    int result = rankComparator.compare(pair1, pair2);
+    int result = handComparator.compare(pair1, pair2);
     assertEquals(0, result, "Identical pairs should tie → zero result");
   }
 
@@ -98,7 +98,7 @@ class RankComparatorTest {
         new Card(CardSuit.DIAMONDS, CardRank.NINE),
         new Card(CardSuit.CLUBS, CardRank.SEVEN)
     );
-    int result = rankComparator.compare(aceHigh, kingHigh);
+    int result = handComparator.compare(aceHigh, kingHigh);
     assertTrue(result < 0, "Ace-high should outrank King-high → negative result");
   }
 
@@ -117,7 +117,7 @@ class RankComparatorTest {
         new Card(CardSuit.DIAMONDS, CardRank.NINE),
         new Card(CardSuit.CLUBS, CardRank.SEVEN)
     );
-    int result = rankComparator.compare(hand1, hand2);
+    int result = handComparator.compare(hand1, hand2);
     assertEquals(0, result, "Identical hands should tie → zero result");
   }
 }

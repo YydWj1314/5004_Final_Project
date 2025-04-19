@@ -1,4 +1,4 @@
-package model;
+package model.VO;
 import enumeration.CardRank;
 import enumeration.CardSuit;
 

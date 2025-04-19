@@ -2,8 +2,8 @@ package model.handtype;
 
 import enumeration.HandRank;
 import java.util.List;
-import model.Card;
-import model.Hand;
+import model.JavaBean.Card;
+import model.JavaBean.Hand;
 import utils.HandEvaluator;
 
 /**

@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import model.Card;
+import model.JavaBean.Card;
 import model.exception.EmptyDeckException;
 import model.exception.HandRankNotFoundException;
 import model.exception.InvalidCardsCountException;
 import model.handtype.Flush;
-import model.Hand;
+import model.JavaBean.Hand;
 import model.handtype.HighCard;
 import model.handtype.Pair;
 import model.handtype.Straight;
@@ -175,5 +175,19 @@ public class HandEvaluator {
         && !isFlush(cards)
         && !isThreeOfOneKind(cards)
         && !isPair(cards);
+  }
+
+  /**
+   * Sorting cards by card value in descending order
+   *
+   * @param cards list of unsorted cards
+   */
+  public static void sortCardsByValue(List<Card> cards) {
+    cards.sort(new Comparator<Card>() {
+      @Override
+      public int compare(Card o1, Card o2) {
+        return Integer.compare(o2.getRank().getRankValue(), o1.getRank().getRankValue());
+      }
+    });
   }
 }
