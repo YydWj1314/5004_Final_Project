@@ -47,8 +47,11 @@ public enum CardSuit {
   }
 
   /**
-   * @param name
-   * @return
+   * Returns the CardSuit enum constant corresponding to the given name.
+   *
+   * @param name the name to look up (e.g., "CLUBS")
+   * @return the corresponding CardSuit enum value
+   * @throws IllegalArgumentException if the name doesn't match any suit
    */
   public static CardSuit fromName(String name){
     for(CardSuit suit: values()){

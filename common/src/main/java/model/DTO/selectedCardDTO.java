@@ -15,6 +15,8 @@ public class selectedCardDTO {
         this.rank = rank;
     }
 
+    // Getters and Setters
+
     public int getPlayerId() {
         return playerId;
     }

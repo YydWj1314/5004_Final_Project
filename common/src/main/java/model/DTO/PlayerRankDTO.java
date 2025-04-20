@@ -31,6 +31,8 @@ public class PlayerRankDTO {
     public PlayerRankDTO() {
     }
 
+    // Getters and Setters
+
     public int getRank() {
         return rank;
     }

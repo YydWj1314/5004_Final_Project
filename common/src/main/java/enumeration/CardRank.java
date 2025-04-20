@@ -20,6 +20,13 @@ public enum CardRank {
   private final String symbol;
   private final String name;
 
+  /**
+   * Constructor for CardRank enum.
+   *
+   * @param value  the numerical rank value
+   * @param symbol the character symbol used to display the rank
+   * @param name   the string name of the rank
+   */
   CardRank(int value, String symbol, String name) {
     this.rankValue = value;
     this.symbol = symbol;
@@ -37,8 +44,11 @@ public enum CardRank {
   }
 
   /**
-   * @param name
-   * @return
+   * Returns the CardRank enum constant corresponding to the given name.
+   *
+   * @param name the name to look up (e.g., "KING")
+   * @return the corresponding CardRank enum value
+   * @throws IllegalArgumentException if the name doesn't match any rank
    */
   public static CardRank fromName(String name){
     for(CardRank rank: values()){
@@ -46,7 +56,7 @@ public enum CardRank {
         return rank;
       }
     }
-    throw new IllegalArgumentException("No suit find with name:" + name);
+    throw new IllegalArgumentException("No rank find with name:" + name);
   }
 
   @Override

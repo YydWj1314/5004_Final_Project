@@ -34,6 +34,7 @@ public class PlayerDTO {
         this.playerHand = playerHand;
     }
 
+    // Getters and Setters
 
     public int getPlayerId() {
         return playerId;
