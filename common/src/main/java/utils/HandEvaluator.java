@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import model.JavaBean.Card;
+import model.exception.EMPTY_HAND;
 import model.exception.EmptyDeckException;
 import model.exception.HandRankNotFoundException;
 import model.exception.InvalidCardsCountException;
@@ -24,8 +25,10 @@ import model.handtype.ThreeOfOneKind;
  * Utility class to evaluate a list of 3 cards into the correct hand type
  */
 public class HandEvaluator {
+
   /**
    * Sorting cards by card value in descending order
+   *
    * @param cards list of unsorted cards
    */
   public static void sortHandByValue(List<Card> cards) {
@@ -33,28 +36,41 @@ public class HandEvaluator {
   }
 
   /**
-   * Determines which poker hand type matches the given cards, returning
-   * the corresponding Hand instance
+   * Determines which poker hand type matches the given cards, returning the corresponding Hand
+   * instance
+   *
    * @param handCards a list of exactly 3 cards on hand
    * @return the strongest-matching hand type
-   * @throws EmptyDeckException           if handCards is null or empty
-   * @throws InvalidCardsCountException   if handCards.size() != 3
-   * @throws HandRankNotFoundException    if no ranking matches (should be unreachable)
+   * @throws EmptyDeckException         if handCards is null or empty
+   * @throws InvalidCardsCountException if handCards.size() != 3
+   * @throws HandRankNotFoundException  if no ranking matches (should be unreachable)
    */
   public static Hand getResult(List<Card> handCards) {
     if (handCards == null || handCards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
     if (handCards.size() != 3) {
       throw new InvalidCardsCountException(ExceptionMessage.INVALID_CARDS_COUNT.getMessage());
     }
 
-    if (HandEvaluator.isStraightFlush(handCards)) return new StraightFlush(handCards);
-    if (HandEvaluator.isThreeOfOneKind(handCards)) return new ThreeOfOneKind(handCards);
-    if (HandEvaluator.isFlush(handCards)) return new Flush(handCards);
-    if (HandEvaluator.isStraight(handCards)) return new Straight(handCards);
-    if (HandEvaluator.isPair(handCards)) return new Pair(handCards);
-    if (HandEvaluator.isHighCard(handCards)) return new HighCard(handCards);
+    if (HandEvaluator.isStraightFlush(handCards)) {
+      return new StraightFlush(handCards);
+    }
+    if (HandEvaluator.isThreeOfOneKind(handCards)) {
+      return new ThreeOfOneKind(handCards);
+    }
+    if (HandEvaluator.isFlush(handCards)) {
+      return new Flush(handCards);
+    }
+    if (HandEvaluator.isStraight(handCards)) {
+      return new Straight(handCards);
+    }
+    if (HandEvaluator.isPair(handCards)) {
+      return new Pair(handCards);
+    }
+    if (HandEvaluator.isHighCard(handCards)) {
+      return new HighCard(handCards);
+    }
 
     // Defensive: every 3‑card hand must fit one of the above
     throw new HandRankNotFoundException(ExceptionMessage.HAND_RANK_NOT_FOUND.getMessage());
@@ -67,10 +83,12 @@ public class HandEvaluator {
   public static boolean isStraight(List<Card> cards) {
     // check empty
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
     // check the number of cards
-    if (cards.size() != 3) return false;
+    if (cards.size() != 3) {
+      return false;
+    }
 
     // get a list of card sorting in reverse order
     List<Integer> cardsValue = cards.stream()
@@ -94,10 +112,12 @@ public class HandEvaluator {
    */
   public static boolean isFlush(List<Card> cards) {
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
     // check the number of cards
-    if (cards.size() != 3) return false;
+    if (cards.size() != 3) {
+      return false;
+    }
 
     // map to the set of card suit
     Set<CardSuit> cardSuitSet = cards.stream()
@@ -116,12 +136,11 @@ public class HandEvaluator {
    */
   public static boolean isStraightFlush(List<Card> cards) {
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
     // order matters—flush & straight each checks size and null
     return isStraight(cards) && isFlush(cards);
   }
-
 
 
   /**
@@ -129,10 +148,12 @@ public class HandEvaluator {
    */
   public static boolean isThreeOfOneKind(List<Card> cards) {
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
     // check the number of cards
-    if (cards.size() != 3) return false;
+    if (cards.size() != 3) {
+      return false;
+    }
 
     // check if there is only one rank
     return cards.stream()
@@ -146,7 +167,7 @@ public class HandEvaluator {
    */
   public static boolean isPair(List<Card> cards) {
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
 
     if (cards.size() != 3) {
@@ -164,7 +185,7 @@ public class HandEvaluator {
    */
   public static boolean isHighCard(List<Card> cards) {
     if (cards == null || cards.isEmpty()) {
-      throw new EmptyDeckException(ExceptionMessage.EMPTY_HAND.getMessage());
+      throw new EMPTY_HAND(ExceptionMessage.EMPTY_HAND.getMessage());
     }
 
     if (cards.size() != 3) {

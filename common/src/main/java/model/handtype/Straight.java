@@ -21,6 +21,7 @@ public class Straight extends Hand {
 
   /**
    * Returns the HandRank for this type
+   *
    * @return HandRank.STRAIGHT
    */
   @Override
@@ -30,6 +31,7 @@ public class Straight extends Hand {
 
   /**
    * Returns the numeric strength of this hand type
+   *
    * @return integer value associated with HandRank.STRAIGHT
    */
   @Override
@@ -39,6 +41,7 @@ public class Straight extends Hand {
 
   /**
    * Returns all cards comprising the straight
+   *
    * @return shallow copy of the cards in this straight
    */
   @Override
@@ -47,12 +50,13 @@ public class Straight extends Hand {
   }
 
   /**
-   * Retrieves the highest‐ranked card in the straight sequence.
-   * Handles the special “wheel” case (A–2–3) where the 2 is the high card
+   * Retrieves the highest‐ranked card in the straight sequence. Handles the special “wheel” case
+   * (A–2–3) where the 2 is the high card
+   *
    * @return the highest card in the straight
    * @throws CardNotFoundException if the expected card cannot be found
    */
-  public Card getHighestCard(){
+  public Card getHighestCard() {
     HandEvaluator.sortHandByValue(this.cards);
 
     // Extract numeric values, get the list of value: A-3-2 --> 14-3-2
@@ -61,11 +65,12 @@ public class Straight extends Hand {
         .collect(Collectors.toList());
 
     // Special wheel case: A-3-2 should treat '2' as highest
-    if (cardValues.containsAll(List.of(14, 3, 2))){
+    if (cardValues.containsAll(List.of(14, 3, 2))) {
       return cards.stream()
           .filter(card -> card.getRank().getRankValue() == 2)
           .findFirst()
-          .orElseThrow(() -> new CardNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+          .orElseThrow(
+              () -> new CardNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
     // Normal case: first element in sorted list(descending) is highest
     return cards.get(0);

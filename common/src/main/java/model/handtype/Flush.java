@@ -18,6 +18,7 @@ public class Flush extends Hand {
 
   /**
    * Returns the HandRank enumeration value for this flush
+   *
    * @return HandRank.FLUSH
    */
   @Override
@@ -27,6 +28,7 @@ public class Flush extends Hand {
 
   /**
    * Returns the numeric strength value of this hand type
+   *
    * @return the integer value associated with HandRank.FLUSH
    */
   @Override

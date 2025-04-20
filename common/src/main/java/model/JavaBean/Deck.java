@@ -11,6 +11,7 @@ import java.util.logging.Logger;
  * Represents a standard deck of 52 playing cards.
  */
 public class Deck {
+
   private static final Logger logger = Logger.getLogger(Deck.class.getName());
   private List<Card> cards;
 
@@ -23,8 +24,8 @@ public class Deck {
   }
 
   /**
-   * Clears the deck and adds all 52 unique cards in order.
-   * Populates the deck with every combination of CardSuit and CardRank.
+   * Clears the deck and adds all 52 unique cards in order. Populates the deck with every
+   * combination of CardSuit and CardRank.
    */
   public void initDeck() {
     cards.clear();
@@ -36,8 +37,8 @@ public class Deck {
   }
 
   /**
-   * Shuffles the deck into a random order.
-   * Uses Collections#shuffle to randomize the order of the cards.
+   * Shuffles the deck into a random order. Uses Collections#shuffle to randomize the order of the
+   * cards.
    */
   public void shuffle() {
     Collections.shuffle(cards);
@@ -47,8 +48,8 @@ public class Deck {
    * Deals (removes and returns) the top n cards from the deck.
    *
    * @param n the number of cards to deal
-   * @return a list of n cards from the top of the deck, or null if there are
-   *         not enough cards remaining
+   * @return a list of n cards from the top of the deck, or null if there are not enough cards
+   * remaining
    */
   public List<Card> deal(int n) {
     if (isEmpty() || cards.size() < n) {

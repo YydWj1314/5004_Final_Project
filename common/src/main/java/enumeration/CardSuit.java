@@ -53,9 +53,9 @@ public enum CardSuit {
    * @return the corresponding CardSuit enum value
    * @throws IllegalArgumentException if the name doesn't match any suit
    */
-  public static CardSuit fromName(String name){
-    for(CardSuit suit: values()){
-      if(suit.getName().equals(name)){
+  public static CardSuit fromName(String name) {
+    for (CardSuit suit : values()) {
+      if (suit.getName().equals(name)) {
         return suit;
       }
     }

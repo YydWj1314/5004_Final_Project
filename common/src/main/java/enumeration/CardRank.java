@@ -2,7 +2,7 @@ package enumeration;
 
 public enum CardRank {
   TWO(2, "2", "TWO"),
-  THREE(3, "3","THREE" ),
+  THREE(3, "3", "THREE"),
   FOUR(4, "4", "FOUR"),
   FIVE(5, "5", "FIVE"),
   SIX(6, "6", "SIX"),
@@ -37,7 +37,9 @@ public enum CardRank {
     return this.rankValue;
   }
 
-  public String getName(){ return this.name; }
+  public String getName() {
+    return this.name;
+  }
 
   public String getSymbol() {
     return symbol;
@@ -50,9 +52,9 @@ public enum CardRank {
    * @return the corresponding CardRank enum value
    * @throws IllegalArgumentException if the name doesn't match any rank
    */
-  public static CardRank fromName(String name){
-    for(CardRank rank: values()){
-      if(rank.getName().equals(name)){
+  public static CardRank fromName(String name) {
+    for (CardRank rank : values()) {
+      if (rank.getName().equals(name)) {
         return rank;
       }
     }

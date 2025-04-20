@@ -17,6 +17,7 @@ public class HighCard extends Hand {
 
   /**
    * Returns the type of this hand
+   *
    * @return HandRank.HIGH_CARD
    */
   @Override
@@ -26,6 +27,7 @@ public class HighCard extends Hand {
 
   /**
    * Returns the numeric strength value of this hand type
+   *
    * @return integer value associated with HandRank.HIGH_CARD
    */
   @Override
@@ -35,8 +37,9 @@ public class HighCard extends Hand {
 
 
   /**
-   * Identifies the “main” card of hand cards, the single highest card
-   * The cards list is first sorted by rank, then the top card is returned
+   * Identifies the “main” card of hand cards, the single highest card The cards list is first
+   * sorted by rank, then the top card is returned
+   *
    * @return a singleton list containing the highest‑ranked card
    */
   @Override

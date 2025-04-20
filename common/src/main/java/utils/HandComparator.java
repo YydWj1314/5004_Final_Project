@@ -13,11 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Comparator for two player with 3‑card hands represented as List<Card>
- * First orders by HandRank, then tiebreaks within equal rank
+ * Comparator for two player with 3‑card hands represented as List<Card> First orders by HandRank,
+ * then tiebreaks within equal rank
  */
 
 public class HandComparator implements Comparator<List<Card>> {
+
   @Override
   public int compare(List<Card> o1, List<Card> o2) {
     Hand hand1 = HandEvaluator.getResult(o1);
@@ -44,9 +45,9 @@ public class HandComparator implements Comparator<List<Card>> {
   }
 
 
-/**
- * Tiebreak logic when both hands share the same HandRank
- */
+  /**
+   * Tiebreak logic when both hands share the same HandRank
+   */
   private int compareSameRank(List<Card> o1, List<Card> o2) {
     Hand hand1 = HandEvaluator.getResult(o1);
     Hand hand2 = HandEvaluator.getResult(o2);
@@ -74,7 +75,9 @@ public class HandComparator implements Comparator<List<Card>> {
 
         // compare the pair ranks first
         int pairCmp = pairHand2.getPairRank().compareTo(pairHand1.getPairRank());
-        if (pairCmp != 0) return pairCmp;
+        if (pairCmp != 0) {
+          return pairCmp;
+        }
 
         // then compare the single non‑pair card
         Card non1 = pairHand1.getNonPairCard();
@@ -102,7 +105,8 @@ public class HandComparator implements Comparator<List<Card>> {
         }
         return 0;
       }
-      default -> throw new HandRankNotFoundException(ExceptionMessage.HAND_RANK_NOT_FOUND.getMessage());
+      default ->
+          throw new HandRankNotFoundException(ExceptionMessage.HAND_RANK_NOT_FOUND.getMessage());
     }
   }
 }

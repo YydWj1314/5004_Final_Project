@@ -19,6 +19,7 @@ public class ThreeOfOneKind extends Hand {
 
   /**
    * Returns the HandRank enumeration for this hand
+   *
    * @return HandRank.THREE_OF_A_KIND
    */
   @Override
@@ -29,6 +30,7 @@ public class ThreeOfOneKind extends Hand {
 
   /**
    * Returns the numeric strength value associated with this hand type
+   *
    * @return integer value of HandRank.THREE_OF_A_KIND
    */
   @Override
@@ -48,6 +50,7 @@ public class ThreeOfOneKind extends Hand {
 
   /**
    * Retrieves the rank shared by all three cards in this hand
+   *
    * @return the CardRank that appears three times
    */
   public CardRank getThreeOfOneKindRank() {

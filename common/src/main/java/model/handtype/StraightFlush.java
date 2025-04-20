@@ -8,8 +8,8 @@ import model.JavaBean.Card;
 import model.JavaBean.Hand;
 
 /**
- * Represents a Straight Flush: three consecutive cards of the same suit
- * This is the strongest hand in this three‑card case
+ * Represents a Straight Flush: three consecutive cards of the same suit This is the strongest hand
+ * in this three‑card case
  */
 public class StraightFlush extends Hand {
 
@@ -19,6 +19,7 @@ public class StraightFlush extends Hand {
 
   /**
    * Returns the HandRank enumeration for this hand type
+   *
    * @return HandRank.STRAIGHT_FLUSH
    */
   @Override
@@ -28,6 +29,7 @@ public class StraightFlush extends Hand {
 
   /**
    * Returns the numeric strength value associated with this hand type
+   *
    * @return integer value of HandRank.STRAIGHT_FLUSH
    */
   @Override
@@ -45,6 +47,7 @@ public class StraightFlush extends Hand {
 
   /**
    * get the suit common to all cards in this straight flush
+   *
    * @return the CardSuit shared by each card
    */
   public CardSuit getStraightFlushSuit() {

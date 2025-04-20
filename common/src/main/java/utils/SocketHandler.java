@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class SocketHandler {
+
   public static final Logger log = LoggerFactory.getLogger(SocketHandler.class);
   private Socket socket;
 
@@ -38,12 +39,12 @@ public class SocketHandler {
    *
    * @param msg String message to be sent
    */
-  public void sendMessage(String msg){
-    if(this.socket == null){
+  public void sendMessage(String msg) {
+    if (this.socket == null) {
       log.warn("Message Send Error: Socket is null");
       return;
     }
-    if(dataOutputStream == null){
+    if (dataOutputStream == null) {
       log.warn("Message Send Error: Stream not initialized");
       return;
     }
@@ -59,14 +60,13 @@ public class SocketHandler {
   /**
    * Encapsulating message reading util using UTF-8 encoding
    *
-   * @return message received in UTF-8 Binary String,
-   * or null if error occurs
+   * @return message received in UTF-8 Binary String, or null if error occurs
    */
-  public String receiveMessage(){
-    if(this.socket == null){
+  public String receiveMessage() {
+    if (this.socket == null) {
       log.warn("Message Receive Error: Socket is null");
     }
-    if(dataInputStream == null){
+    if (dataInputStream == null) {
       log.warn("Message Receive Error: InputStream is null");
     }
     try {
@@ -81,12 +81,14 @@ public class SocketHandler {
   /**
    * Closing socket of the SocketHandler
    */
-  public void close(){
+  public void close() {
     try {
-      if (socket != null) socket.close();
+      if (socket != null) {
+        socket.close();
+      }
       log.info("SocketHandler Closed Successfully");
     } catch (IOException e) {
-      log.error("SocketHandler Closed Error" , e);
+      log.error("SocketHandler Closed Error", e);
     }
   }
 

@@ -9,6 +9,7 @@ import utils.SocketHandler;
  * Represents a player in the game with a unique ID, username, hand of cards, and hand rank.
  */
 public class Player {
+
   private int playerId; //unique identifier for the player
   private String playerName;
   private List<Card> playerHand; //cards currently held by the player
@@ -19,8 +20,7 @@ public class Player {
   private int rank = -1;
 
   /**
-   * Constructor for frontend
-   * Need to be set
+   * Constructor for frontend Need to be set
    *
    * @param playerName the username of the player
    */
@@ -31,11 +31,10 @@ public class Player {
 
 
   /**
-   * Player Constructor for Backend
-   * Each player is assigned a unique player ID
+   * Player Constructor for Backend Each player is assigned a unique player ID
    *
    * @param playerName the username of the player
-   * @param socket socket to connect with frontend
+   * @param socket     socket to connect with frontend
    */
   public Player(String playerName, Socket socket) {
     // Ensure each player is created with a unique playerId incremented by 1
@@ -131,10 +130,10 @@ public class Player {
   @Override
   public String toString() {
     return "Player{" +
-            "playerId=" + playerId +
-            ", playerName='" + playerName + '\'' +
-            ", playerHand=" + playerHand +
-            ", selectedCards=" + selectedCards +
-            '}';
+        "playerId=" + playerId +
+        ", playerName='" + playerName + '\'' +
+        ", playerHand=" + playerHand +
+        ", selectedCards=" + selectedCards +
+        '}';
   }
 }

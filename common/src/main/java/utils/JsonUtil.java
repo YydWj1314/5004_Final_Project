@@ -6,7 +6,8 @@ import com.alibaba.fastjson.JSONArray;
 /**
  * A utility class for JSON serialization and deserialization using FastJSON.
  * <p>
- * Provides convenient methods to convert objects to JSON strings and parse JSON strings into objects or arrays.
+ * Provides convenient methods to convert objects to JSON strings and parse JSON strings into
+ * objects or arrays.
  * </p>
  */
 public class JsonUtil {
